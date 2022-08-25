@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+您看到的是物联网应用的演示界面！
+<p>本程序由亚马逊中国提供服务器和数据库等资源，由DIGI中国提供硬件接入和整体方案设计！</p>
+<p>如果您需要更多资料和定制设计，敬请联系！</p>
+
+
+{% if submitted %}
+    <b>您已经成功提交了咨询请求，我们会尽快联系你！</b>
+{% else %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="提交" class="btn btn-secondary">
+</form>
+
+{% endif %}
+
+{% endblock %}
+

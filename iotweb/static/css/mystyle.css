@@ -1,0 +1,118 @@
+:root {
+  --digi-green: #84C361;
+  --digi-green-transparent: rgba(132, 195, 97, 0.3);
+  --digi-green-dark: #6E9C54;
+  --digi-gray: #717174;
+  --digi-gray-transparent: rgba(113, 113, 116, 0.3);
+  --nav-img-size: 34px;
+
+  --font-family-open-sans: "Open Sans", Arial, "sans serif";
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.side-navbar {
+  width: 180px;
+  height: 100%;
+  position: fixed;
+  margin-left: -300px;
+  background-color: #100901;
+  transition: 0.5s;
+}
+
+.nav-link:active,
+.nav-link:focus,
+.nav-link:hover {
+  background-color: #ffffff26;
+}
+
+.my-container {
+  transition: 0.4s;
+}
+
+.active-nav {
+  margin-left: 0;
+}
+
+/* for main section */
+.active-cont {
+  margin-left: 180px;
+}
+
+#menu-btn {
+  background-color: #100901;
+  color: #fff;
+  margin-left: -62px;
+}
+
+.my-container input {
+  border-radius: 2rem;
+  padding: 2px 20px;
+}
+
+  /*
+body {
+  margin: 0;
+  padding: 0;
+  }
+*/
+
+map {
+  
+  position: relative;
+  height: calc(100% - 35px);
+
+} 
+/*
+
+*/
+
+.banner-icon, .map-icon {
+  height: var(--nav-img-size);
+}
+
+.mynavmenu {
+
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.marker {
+  background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  display: block;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mapboxgl-popup {
+  max-width: 200px;
+}
+  
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+ 
+.marker-info-title {
+  text-align: center;
+  color: forestgreen;
+  font-weight: bold;
+  font-size: 16px;
+  }
+  

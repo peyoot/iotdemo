@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block profile %}
+        <div class="nav-right-container">
+            {% block nav_widgets %}{% endblock %}
+          <!--
+            <div class="dropdown">
+                <a
+                  class="dropdown-toggle d-inline-flex align-items-center hidden-arrow"
+                  href="#"
+                  id="navbarDropdownMenuAvatar"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                    class="rounded-circle banner-icon"
+                    height="50"
+                    alt="Black and White Portrait of a Man"
+                    loading="lazy"
+                  />
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdownMenuAvatar"
+                >
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      My profile
+                    </a>
+                  </li>
+                  <li>
+                     <a class="dropdown-item" href="#">
+                        Settings
+                      </a>
+                   </li>
+                   <li>
+                       <a class="dropdown-item" href="#">
+                          Logout
+                       </a>
+                   </li>
+                </ul>
+            </div>
+          -->
+            <div class="dropdown digi-gray" id="profile-container">
+                <button class="btn dropdown-toggle d-inline-flex align-items-center hidden-arrow" type="button" id="profileMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img id="profile-logo" class="banner-icon" src="{% static 'images/profile_gray.png' %}">
+                </button>
+                <div class="dropdown-menu shadow-sm" aria-labelledby="profileMenuButton">
+                    {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                    {% else %}
+                    <a class="dropdown-item" href="{% url 'login' %}">Log in</a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+{% endblock %}
+
+{% block javascript_outer %}
+<script>
+$( document ).ready(function() {
+    $("#profile-container").on({
+        "mouseover" : function() {
+            $("#profile-logo").attr("src", "{% static 'images/profile_green.png' %}");
+            if (!$("#profile-container").hasClass("digi-green")) {
+                $("#profile-container").addClass("digi-green");
+            }
+            if ($("#profile-container").hasClass("digi-gray")) {
+                $("#profile-container").removeClass("digi-gray");
+            }
+        },
+        "mouseout" : function() {
+            $("#profile-logo").attr("src", "{% static 'images/profile_gray.png' %}");
+            if (!$("#profile-container").hasClass("digi-gray")) {
+                $("#profile-container").addClass("digi-gray");
+            }
+            if ($("#profile-container").hasClass("digi-green")) {
+                $("#profile-container").removeClass("digi-green");
+            }
+        }
+    });
+});
+</script>
+{% block javascript %}{% endblock %}
+{% endblock %}
+
+

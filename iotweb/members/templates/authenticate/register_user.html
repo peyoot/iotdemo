@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<h3>用户注册</h3>
+    
+{% if form.errors %}
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <p>表格有错误，请检查</p>
+{% endif%}
+
+    <form action="{% url 'register_user' %}" method="post">
+        {% csrf_token %}
+     
+        {{ form.as_p }}
+           
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+        
+
+{% endblock %}
+

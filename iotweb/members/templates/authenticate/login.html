@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<h3>用户登录</h3>
+    仅注册用户可以使用本系统，请先登录。如果您还没注册，请先<a href="{% url 'register_user' %}">注册</a>
+   
+
+    <form action="" method="post">
+        {% csrf_token %}
+     
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">用户名</label>
+              <input type="text" class="form-control" name="username" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">密码</label>
+              <input type="password" class="form-control" name="password">
+            </div>
+           
+            <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+        
+
+{% endblock %}
+
