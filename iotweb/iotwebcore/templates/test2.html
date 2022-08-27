@@ -1,0 +1,88 @@
+{% extends 'base_logged_in_sidebar.html' %}
+
+{% load static %}
+
+{% block toptitle %} <h5>欢迎使用Digi和亚马逊中国的物联网演示平台 </h5> {% endblock %}
+{% block page_content %}
+
+  <!-- Create a container for the map. -->
+  <div id='map' width="100%" style='height:600px'></div>
+
+  <script>
+    mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
+
+    const geojson = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [120.00, 31.00]
+            },
+            properties: {
+                title: '<h5>华东太阳能示范园区</h5>Digi华东物联网基地太阳能示范中心',
+                description: '<hr><div class=\"marker-info-title\"><img src="{% static "/info_status.png" %}" height="36px" alt="Status"><span> 正常运营中 <span> <br> <span>装机容量： 100MW <br> 当前发电：  11 千度 </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">管理</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
+                'message': '请先登录，确保您有相应的操作权限',
+                'iconSize': [80,80]
+            }
+          },
+          {
+            type: 'Feature',
+            geometry: {
+            type: 'Point',
+            coordinates: [109.43, 36.00]
+            },
+            properties: {
+            title: '<h5>迪进西北太阳能站</h5>Digi西北物联网基地太阳能示范中心',
+            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> 正常运营中 <span> <br> <span>装机容量： 100MW <br> 当前发电：  11 千度 </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">管理</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
+                'message': '请登录，确保您有相应的操作权限',
+            'iconSize': [80,80]
+            }
+          }
+        ]
+    };
+
+
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/outdoors-v11',
+      center: [120.00, 30.00],
+      zoom: 4
+    });
+
+
+    // Add markers to the map.
+    for (const feature of geojson.features) {
+        // Create a DOM element for each marker.
+        const el = document.createElement('div');
+        const width = feature.properties.iconSize[0];
+        const height = feature.properties.iconSize[1];
+        el.className = 'marker';
+        el.style.backgroundImage = `url(https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg)`;
+        el.style.width = `${width}px`;
+        el.style.height = `${height}px`;
+        el.style.backgroundSize = '100%';
+
+        el.addEventListener('click', () => {
+            window.alert(feature.properties.message);
+        });
+
+        // Add markers to the map.
+        new mapboxgl.Marker(el)
+        .setLngLat(feature.geometry.coordinates)
+        .setPopup(
+           new mapboxgl.Popup({ offset: 25 }) // add popups
+           .setHTML(
+               `${feature.properties.title}<p>${feature.properties.description}</p>`
+           )
+       )
+        .addTo(map);
+    }
+
+      </script>
+
+    
+
+    test after map
+{% endblock %}
