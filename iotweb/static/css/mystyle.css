@@ -26,7 +26,7 @@ body {
   height: 100%;
   position: fixed;
   margin-left: -300px;
-  background-color: #100901;
+  background-color: #212529;
   transition: 0.5s;
 }
 
@@ -50,7 +50,7 @@ body {
 }
 
 #menu-btn {
-  background-color: #100901;
+  background-color: #262626;
   color: #fff;
   margin-left: -62px;
 }
