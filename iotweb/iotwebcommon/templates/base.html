@@ -24,81 +24,92 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a id="banner-link" class="navbar-brand align-middle" href="https://www.eccee.com/webinar/digi">
-        <div class="d-flex align-items-baseline">
-            <img id="banner-logo" class="banner-icon" src="{% static 'images/Digi_logo_banner.png' %}">
-        </div>
-      </a>
-      <a class="navbar-brand" href="{% url 'home' %}">物联网应用演示</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{% url 'home' %}">首页</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'comingsoon' %}">太阳能发电场</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'comingsoon' %}">智能制造</a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              更多
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark">
-              <li><a class="dropdown-item" href="{% url 'test2' %}">test2</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'bttest' %}">bttest</a></li>
-            </ul>
-          </li>
-          
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'about' %}">关于我们</a>
-          </li>
-        </ul>
-        {% block profile %}{% endblock %}
-      </div>
-       
-      
-     
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a id="banner-link" class="navbar-brand align-middle" href="https://www.eccee.com/webinar/digi">
+    <div class="d-flex align-items-baseline">
+        <img id="banner-logo" class="banner-icon" src="{% static 'images/Digi_logo_banner.png' %}">
     </div>
-  </nav>
-
-  <!-- Side-Nav -->
-  <div
-  class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column"
-  id="sidebar"
->
-  <ul class="nav flex-column text-white w-100">
-    <a href="#" class="nav-link h3 text-white my-2">
-      控制中心
     </a>
-    <li href="#" class="nav-link">
-      <i class="bx bxs-dashboard"></i>
-      <span class="mx-2">管理面板</span>
-    </li>
-    <li href="#" class="nav-link">
-      <i class="bx bx-user-check"></i>
-      <span class="mx-2">历史数据</span>
-    </li>
-    <li href="#" class="nav-link">
-      <i class="bx bx-conversation"></i>
-      <span class="mx-2">网络</span>
-    </li>
-  </ul>
+    <a class="navbar-brand" href="{% url 'home' %}">物联网应用演示</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}">首页</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'comingsoon' %}">太阳能发电场</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'comingsoon' %}">智能制造</a>
+        </li>
 
-  <span href="#" class="nav-link h4 w-100 mb-5">
-    <a href=""><i class="bx bxl-instagram-alt text-white"></i></a>
-    <a href=""><i class="bx bxl-twitter px-2 text-white"></i></a>
-    <a href=""><i class="bx bxl-facebook text-white"></i></a>
-  </span>
-</div>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            更多
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="{% url 'test2' %}">test2</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'bttest' %}">bttest</a></li>
+          </ul>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">关于我们</a>
+        </li>
+      </ul>
+      {% block profile %}{% endblock %}
+    </div> 
+  </div>
+</nav>
+<div class="container-fluid">
+  {% if user.is_authenticated %}
+  <!-- Side-Nav -->
+  <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column"
+  id="sidebar">
+    <ul class="nav flex-column text-white w-100">
+      <a href="#" class="nav-link h3 text-white my-2">
+        控制中心
+      </a>
+      <li href="#" class="nav-link text-white">
+        <i class="bx bxs-dashboard"></i>
+        <span class="mx-2">管理面板</span>
+      </li>
+      <li href="#" class="nav-link text-white">
+        <i class='bx bx-network-chart'></i>
+        <span class="mx-2">网络管理</span>
+      </li>
+      <li href="#" class="nav-link text-white">
+        <i class="bx bx-hdd"></i>
+        <span class="mx-2">通信网关</span>
+      </li>
+      <li href="#" class="nav-link text-white">
+        <i class="bx bx-cable-car"></i>
+        <span class="mx-2">支架控制</span>
+      </li>
+      <li href="#" class="nav-link text-white">
+        <i class="bx bx-user-check"></i>
+        <span class="mx-2">历史数据</span>
+      </li>
+
+      <li href="#" class="nav-link text-white">
+        <i class="bx bx-conversation"></i>
+        <span class="mx-2">计划任务</span>
+      </li>
+    </ul>
+
+    <span href="#" class="nav-link h4 w-100 mb-5">
+      <a href=""><i class="bx bxl-instagram-alt text-white"></i></a>
+      <a href=""><i class="bx bxl-twitter px-2 text-white"></i></a>
+      <a href=""><i class="bx bxl-facebook text-white"></i></a>
+    </span>
+  </div>
+  
+  {% endif %}
 
 <!-- Main Wrapper -->
 <div class="p-1 my-container active-cont">
@@ -130,7 +141,7 @@
   </div>
 
 
-
+</div>
 </div>
 
 <!--
