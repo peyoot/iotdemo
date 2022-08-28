@@ -8,11 +8,11 @@ class CustomerForm(ModelForm):
         model = CustomerInquiry
         fields = ('company','name','email','phone','description')
         labels = {
-            'company': '公司',
-            'name': '姓名',
-            'email': '电子邮件',
-            'phone': '电话',
-            'description': '内容',
+            'company': 'Company',
+            'name': 'Name',
+            'email': 'Email',
+            'phone': 'Phone',
+            'description': 'Inquiry',
         }
 
         widgets = {

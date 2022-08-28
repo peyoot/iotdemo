@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block toptitle %} <h5>欢迎使用Digi和亚马逊中国的物联网演示平台 </h5> {% endblock %}
+{% block toptitle %} <h5>Welcome to Digi AWS IOT Demo Platform </h5> {% endblock %}
 {% block page_content %}
 
   <!-- Create a container for the map. -->
@@ -21,9 +21,9 @@
                 coordinates: [120.00, 31.00]
             },
             properties: {
-                title: '<h5>华东太阳能示范园区</h5>Digi华东物联网基地太阳能示范中心',
-                description: '<hr><div class=\"marker-info-title\"><img src="{% static "/info_status.png" %}" height="36px" alt="Status"><span> 正常运营中 <span> <br> <span>装机容量： 100MW <br> 当前发电：  11 千度 </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">管理</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
-                'message': '请先登录，确保您有相应的操作权限',
+                title: '<h5>East China Solar Park</h5>Digi Shanghai Solar Demo Center',
+                description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed capacity: 100MW <br> Current Power:  11MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
+                'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
                 'iconSize': [80,80]
             }
           },
@@ -34,9 +34,9 @@
             coordinates: [109.43, 36.00]
             },
             properties: {
-            title: '<h5>迪进西北太阳能站</h5>Digi西北物联网基地太阳能示范中心',
-            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> 正常运营中 <span> <br> <span>装机容量： 100MW <br> 当前发电：  11 千度 </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">管理</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
-                'message': '请登录，确保您有相应的操作权限',
+            title: '<h5>Northwest Solar Farm</h5>Digi Northwest Solar IoT demostration center ',
+            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed Capacity: 100MW <br> Current Power:  11 MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
+                'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
             'iconSize': [80,80]
             }
           }
