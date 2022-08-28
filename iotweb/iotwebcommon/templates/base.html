@@ -70,41 +70,40 @@
 {% if user.is_authenticated %}
 {% block sidebar %}{% endblock %}
 <div class="p-1 my-container active-cont">
+    <!-- Top Nav -->
+    <nav class="navbar top-navbar navbar-light bg-light px-5">
+      <a class="fas fa-bars" id="menu-btn"><i class="bx bx-menu"></i></a>
+      <div class="container-fluid">
+      {% block toptitle %}  {% endblock %}
+      </div>
+    </nav>
+    <!--End Top Nav -->
 {% else %}
 <div class="p-1 my-container ">
 {% endif %}
  
 <!-- Main Wrapper -->
 
-  <!-- Top Nav -->
-  <nav class="navbar top-navbar navbar-light bg-light px-5">
-    <a class="fas fa-bars" id="menu-btn"><i class="bx bx-menu"></i></a>
-    <div class="container-fluid">
-    {% block toptitle %}  {% endblock %}
-    </div>
-  </nav>
-  <!--End Top Nav -->
+
   
-  <div class="container-fluid">
-    <div class="row flex-nowrap">
+ 
+  <div class="row flex-nowrap">
 
 
-      <div class="container-fluid">
-          {% if messages %}
-            {% for message in messages %}
-              
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          {% endif%}
-          {% block page_content %}{% endblock %}
-      </div>
+    <div class="container-fluid">
+        {% if messages %}
+          {% for message in messages %}
+            
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif%}
+        {% block page_content %}{% endblock %}
     </div>
   </div>
-
-
+  
 </div>
 
 
