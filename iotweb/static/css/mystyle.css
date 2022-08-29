@@ -116,3 +116,43 @@ map {
   font-size: 16px;
   }
   
+
+  .marker-info-button-container {
+    padding: 5px;
+    position: relative;
+    height: 50px;
+  }
+  
+  .marker-info-button, .marker-info-button-loading {
+    font-size: 18px;
+    position: absolute;
+    border: none;
+    color: white;
+    left: 8%;
+    width: 84%;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px 5px 5px 5px;
+  }
+  
+  .marker-info-button {
+    cursor: pointer;
+    background-color: var(--digi-green);
+  }
+  
+  .marker-info-button:focus, .marker-info-button:checked {
+    border: none;
+    outline: 0px auto transparent;
+  }
+  
+  .marker-info-button-loading {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 0px;
+  }
+  
+  .marker-info-button-off {
+    background-color: #DC3545;
+  }
+  
