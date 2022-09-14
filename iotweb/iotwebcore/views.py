@@ -29,6 +29,9 @@ def test2(request):
     mapbox_access_token = 'pk.eyJ1IjoicGV5b290IiwiYSI6ImNsNXFxdnpwdzIwNnkzaXE5cXB5OGpjYzIifQ.a6yMgV25ozwagcciK7vDtA'
     return render(request,'test2.html',{ 'mapbox_access_token': mapbox_access_token })
 
+def map(request):
+    mapbox_access_token = 'pk.eyJ1IjoicGV5b290IiwiYSI6ImNsNXFxdnpwdzIwNnkzaXE5cXB5OGpjYzIifQ.a6yMgV25ozwagcciK7vDtA'
+    return render(request,'map.html',{ 'mapbox_access_token': mapbox_access_token })
 
 def bttest(request):
     return render(request,'bttest.html',{})
