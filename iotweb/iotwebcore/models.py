@@ -140,6 +140,11 @@ class IoTSite(models.Model):
         if self._devices is None:
             self._devices = []
         self._devices.append(device)
+    class Meta:
+        managed = True
+        verbose_name = 'IoT Site'
+        verbose_name_plural = 'IoT Sites'
+
 
 class IoTDevice(models.Model):
     device_name = models.CharField('device_name',max_length=100)
@@ -164,6 +169,11 @@ class IoTDevice(models.Model):
         self._mac = device_mac
         self._main_controller = None
         self._online = False
+    
+    class Meta:
+        managed = True
+        verbose_name = 'IoT Gateway'
+        verbose_name_plural = 'IoT Gateways'
 
 class NodeDevice(models.Model):
     node_name = models.CharField('device_name',max_length=100)
@@ -188,5 +198,9 @@ class NodeDevice(models.Model):
         self._mac = node_mac
         self._online = False
 
+    class Meta:
+        managed = True
+        verbose_name = 'Node Device'
+        verbose_name_plural = 'Node Devices'
 
 # col,row,offset are to set the array display place on map, col/row*0.001, offset*0.0001
