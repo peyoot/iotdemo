@@ -9,9 +9,12 @@ pip-delete-this-directory.txt
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-*/__pycache__/*
-*/migrations/*
-
+iotweb/iotwebcommon/migrations/
+iotweb/iotwebcore/migrations/
+iotweb/members/migrations/
+iotweb/iotwebcommon/__pycache__/
+iotweb/iotwebcore/__pycache__/
+iotweb/members/__pycache__/
 # Jupyter Notebook
 .ipynb_checkpoints
 
