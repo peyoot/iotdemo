@@ -30,3 +30,5 @@ env.bak/
 venv.bak/
 
 
+iotweb/iotwebcore/aws_certs
+iotweb/iotwebcore/certs

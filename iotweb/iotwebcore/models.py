@@ -18,6 +18,7 @@ class CustomerInquiry(models.Model):
 # iotsite,each iotsite have at least a gateway or iotdevice with network capability to do mqtt stuff
 # prefix are reserved for DRM, not implement at this time
 #SOLAR_FARM_PREFIX = "solar-"
+# when enable_autolist, the webapp will receive devicelist topic and add it to gateway list
 
 DEFAULT_LOCATION = (110, 37)  #ningxia province
 DEFAULT_TYPE = ('SolarFarm','solarfarm')
@@ -38,11 +39,12 @@ NODE_TYPE = (
             )
 
 class IoTSite(models.Model):
-    name = models.CharField('Site Name',max_length=100)
+    name = models.CharField('Site Name', default='demo', max_length=100)
     iot_type = models.CharField(choices=IOT_TYPE,max_length=10)
     user = models.ForeignKey(SiteUser, on_delete=models.CASCADE, blank=True, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
+    enable_autolist = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
