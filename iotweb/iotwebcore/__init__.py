@@ -1,6 +1,7 @@
-from . import mqtt
+#from . import mqttapp
 
-mqtt.client.loop_start()
+#mqttapp.mqttAPP.__main__
+#mqtt.client.loop_start()
 
 #mysubscribe = False
 #while mqtt_connected == True:
