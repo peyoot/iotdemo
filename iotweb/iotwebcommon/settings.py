@@ -74,6 +74,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'iotwebcommon.wsgi.application'
 ASGI_APPLICATION = 'iotwebcommon.asgi.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": ["redis://:eccee.com.test@127.0.0.1:10379/0"],
+        },
+    },
+}
+
+# Local mqtt settings
+MQTT_TLS = True
+MQTT_CA = 'iotwebcore/ca.crt'
+MQTT_CERT = 'iotwebcore/client1.crt'
+MQTT_KEY = 'iotwebcore/client1.key'
+MQTT_HOST = "52.80.119.72"
+#MQTT_USER = "mqtt-test"
+#MQTT_PASSWORD = "mqtt-test"
+MQTT_VERSION = 311  # defaults to 50
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -130,3 +149,40 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'members.SiteUser'  # 扩展系统的用户表后记得添加此行
 LOGIN_URL = '/login/'  # 想进入需要登录才能访问的页面时，如果未登录，将跳转到LOGIN_URL指定的登录界面
+
+
+import logging.config
+
+#LOGGING_CONFIG = None
+
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            # exact format is not important, this is the minimum information
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+    },
+    'loggers': {
+    # root logger
+        'chanmqttproxy': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'iotwebcommon': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+        'iotwebcore': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+    },
+})

@@ -8,14 +8,24 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
 """
 
 import os
-from channels.routing import ProtocolTypeRouter  
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, ChannelNameRouter, URLRouter
 from django.core.asgi import get_asgi_application
+from chanmqttproxy import MqttConsumer
+import iotwebcore.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'iotwebcommon.settings')
 
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter({
-    "http": django_asgi_app,
-    # Just HTTP for now. (We can add other protocols later.)
+    "channel": ChannelNameRouter({
+        "mqtt": MqttConsumer.as_asgi()
+    }),
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            iotwebcore.routing.websocket_urlpatterns
+        )
+    ),
 })
