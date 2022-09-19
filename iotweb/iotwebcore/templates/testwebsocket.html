@@ -1,0 +1,18 @@
+{% extends 'base_logged_in_sidebar.html' %}
+
+{% load static %}
+
+{% block toptitle %} <h5>Welcome to Digi AWS IOT Demo Platform </h5> {% endblock %}
+{% block page_content %}
+<script>
+    var socket = new WebSocket('ws://' + window.location.host + '/trigger/');
+
+    socket.onopen = function open() {
+      console.log('WebSockets connection created.');
+    };
+
+    if (socket.readyState == WebSocket.OPEN) {
+      socket.onopen();
+    }
+  </script>
+{% endblock %}

@@ -1,6 +1,6 @@
 import json
 #from channels.consumer import AsyncConsumer
-from channels import Group
+#from channels import Group
 from chanmqttproxy.mqttconsumer import MqttConsumer
 
 class MyMqttConsumer(MqttConsumer):
