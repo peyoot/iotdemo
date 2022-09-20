@@ -85,9 +85,9 @@ CHANNEL_LAYERS = {
 
 # Local mqtt settings
 MQTT_TLS = True
-MQTT_CA = 'iotwebcore/ca.crt'
-MQTT_CERT = 'iotwebcore/client1.crt'
-MQTT_KEY = 'iotwebcore/client1.key'
+MQTT_CA = 'iotwebcore/certs/ca.crt'
+MQTT_CERT = 'iotwebcore/certs/client1.crt'
+MQTT_KEY = 'iotwebcore/certs/client1.key'
 MQTT_HOST = "52.80.119.72"
 #MQTT_USER = "mqtt-test"
 #MQTT_PASSWORD = "mqtt-test"

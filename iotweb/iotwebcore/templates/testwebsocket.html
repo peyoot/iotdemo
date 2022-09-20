@@ -4,15 +4,44 @@
 
 {% block toptitle %} <h5>Welcome to Digi AWS IOT Demo Platform </h5> {% endblock %}
 {% block page_content %}
+    <!-- 输入内容 -->
+    <input type="text" name="" id="" placeholder="请输入内容">
+    <!-- 发送请求 -->
+    <button>发送</button>   
+    <!-- 接收websocket服务得数据 -->
+    <div></div>
+
+
 <script>
-    var socket = new WebSocket('ws://' + window.location.host + '/trigger/');
 
-    socket.onopen = function open() {
-      console.log('WebSockets connection created.');
-    };
+    var input=document.querySelector('input')
+    var button=document.querySelector('button')
+    var div=document.querySelector('div')
+        // 'ws://echo.websocket.org/'这个服务地址是websocket官方文档中的地址
+    // 不用纠结，后面下一个案例会把他换成自己的
+    // 创建websocket服务地址
+    const socket=new WebSocket('ws://'
+        + window.location.host
+        + '/ws/id0001'
+        + '/'
+    );
 
-    if (socket.readyState == WebSocket.OPEN) {
-      socket.onopen();
-    }
-  </script>
+    // 当与服务器连接成功出发open事件（websocket四大基本事件https://www.runoob.com/html/html5-websocket.html）
+
+    socket.addEventListener('open',function(){
+        div.innerHTML='连接服务器成功'
+    })
+
+
+    button.addEventListener('click',function(){
+        var value=input.value
+        console.log(value);
+        socket.send(value)
+    })
+
+    socket.addEventListener('message',function(e){
+        div.innerHTML=e.data
+    })
+    
+</script>
 {% endblock %}

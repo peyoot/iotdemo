@@ -2,8 +2,9 @@ import json
 #from channels.consumer import AsyncConsumer
 #from channels import Group
 from chanmqttproxy.mqttconsumer import MqttConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
-class MyMqttConsumer(MqttConsumer):
+class IotwebcoreConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         ... # existing group_add() calls
         # Join mqtt group
@@ -25,8 +26,8 @@ class MyMqttConsumer(MqttConsumer):
     # Receive message from mqtt group and send to websocket
     async def mqtt_message(self, event):
         message = event['message']
-        topic = messagep["topic"]
-        payload = messagep["payload"]
+        topic = message["topic"]
+        payload = message["payload"]
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': payload

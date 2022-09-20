@@ -11,6 +11,9 @@ def home(request):
 def comingsoon(request):
     return render(request,'comingsoon.html',{})
 
+def testws(request):
+    return render(request,'testwebsocket.html',{})
+
 def about(request):
     submitted = False
     if request.method == "POST":
