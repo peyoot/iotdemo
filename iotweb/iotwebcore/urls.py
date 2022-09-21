@@ -8,5 +8,6 @@ urlpatterns = [
     path('comingsoon',views.comingsoon,name='comingsoon'),
     path('test2',views.test2,name='test2'),
     path('map',views.map,name='map'),
+    path('temp',views.temp,name='temp'),
     path('bttest',views.bttest,name='bttest'),
 ]

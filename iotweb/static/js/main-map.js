@@ -116,7 +116,7 @@ function showpopup() {
         el.style.backgroundImage = `url(https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg)`;
         el.style.width = `${width}px`;
         el.style.height = `${height}px`;
-        el.style.backgroundSize = '100%';
+        //el.style.backgroundSize = '100%';
 
         el.addEventListener('click', () => {
             window.alert(feature.properties.message);

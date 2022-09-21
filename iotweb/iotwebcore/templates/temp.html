@@ -1,0 +1,27 @@
+{% extends 'base_logged_in_sidebar.html' %}
+
+{% load static %}
+
+{% block toptitle %} <h5>Welcome to Digi AWS IOT Demo Platform </h5> {% endblock %}
+
+{% block page_content %}
+
+
+<script>
+document.write((Math.random()*(15-10) + 10).toFixed(2))
+
+</script>
+
+<p>
+    
+{%for item in sitelist %}
+
+    {{ item.name }}
+    {{ item.latitude }}
+{% endfor %}
+    
+</p>
+
+
+
+{% endblock %}

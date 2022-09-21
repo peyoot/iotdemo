@@ -35,7 +35,7 @@
             },
             properties: {
             title: '<h5>Northwest Solar Farm</h5>Digi Northwest Solar IoT demostration center ',
-            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed Capacity: 100MW <br> Current Power:  11 MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
+            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed Capacity: 100MW <br> Current Power:   11 MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
                 'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
             'iconSize': [80,80]
             }
@@ -62,7 +62,7 @@
         el.style.backgroundImage = `url(https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg)`;
         el.style.width = `${width}px`;
         el.style.height = `${height}px`;
-        el.style.backgroundSize = '100%';
+        
 
         el.addEventListener('click', () => {
             window.alert(feature.properties.message);

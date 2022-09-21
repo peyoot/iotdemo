@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .forms import CustomerForm
+from iotwebcore.models import IoTSite
 
 # Create your views here.
 
@@ -13,6 +14,21 @@ def comingsoon(request):
 
 def testws(request):
     return render(request,'testwebsocket.html',{})
+
+def temp(request):
+    userid = request.session.get('_auth_user_id', None)
+    username = request.user
+
+    mylist = []
+    result = list(IoTSite.objects.filter(user=1).all().values())
+    #print("full list")
+    for n in range(len(result)):
+        site_info = {"name": result[n]['name'],"longitude": result[n]['longitude'],"latitude": result[n]['latitude']}
+        mylist.append(site_info)
+    return render(request,'temp.html',{'sitelist': mylist})
+#    Just pass these as an entry of the dictionary in above, and then render it in template
+#    return render(request,'temp.html',{'iotsite': site_info})
+#    return render(request,'temp.html',{'user': {'uname': username, 'id': userid}})
 
 def about(request):
     submitted = False
