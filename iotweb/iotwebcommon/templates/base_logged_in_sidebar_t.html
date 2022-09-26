@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block sidebar %}
-
        {% if user.is_authenticated %}
         <!-- Side-Nav -->
         <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">
@@ -21,5 +20,11 @@
                 </ul>
             </div>
         </div>
+        <div class="p-1 my-container active-cont">
+          <nav class="navbar top-navbar navbar-light bg-light px-5">
+            <a class="fas fa-bars" id="menu-btn"><i class="bx bx-menu"></i></a>
+          </nav>
+        {{ else }}
+        <div class="p-1 my-container active-cont"></div>
         {% endif %}
 {% endblock %}
