@@ -92,7 +92,11 @@
 
     
 
-    test after map
+    test after map, 
+
+   
+
+    more test
 {% endblock %}
 
 {% block javascript %}
@@ -110,13 +114,22 @@
    
     </script>
     <p>
-    
-        {%for item in sitelist %}
+       
+
+
+        here is contextes:
+
+        {% for item in contexts %}
         
-            {{ item.id }}
             {{ item.name }}
-            {{ item.longitude }}
-            {{ item.latitude }}
+            {{ item.mapbox_access_token }}
+            <p>
+            here is iotsites
+            </p>
+            {% for d in item.iotsites %}
+            {{ d.name }}
+            {% endfor %}
+          
         {% endfor %}
             
         </p>

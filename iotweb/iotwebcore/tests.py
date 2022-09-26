@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.forms.models import model_to_dict
-from iotwebcore.models import IoTSite
+from iotwebcore.models import IoTSite, SiteConfig
 from django.contrib import auth
 from members.models import SiteUser
 
@@ -44,7 +44,7 @@ for n in range(len(result)):
     site_info = {"name": result[n]['name'],"longitude": result[n]['longitude'],"latitude": result[n]['latitude']}
     mylist.append(site_info)
 print(mylist)
-"""
+
 
 sitelist = []
 geometry = {}
@@ -58,4 +58,30 @@ for n in range(len(result)):
     sitelist.append(site_info)
 print(sitelist)
     
-#    print("now is",n,"longitude",longitude,"latitude",latitude)
+print("site config is")
+result = list(SiteConfig.objects.filter(id=1).values('name','mapbox_access_token'))
+#result = SiteConfig.objects.get(id=1)
+print(result)
+
+"""
+
+iotsites = []
+contexts = []
+result = list(IoTSite.objects.filter(user=1).all().values())
+#print("full list")
+for n in range(len(result)):
+    iotsite_info = {'id':n, 'name': result[n]['name'],'longitude': result[n]['longitude'],'latitude':result[n]['latitude']}
+    iotsites.append(iotsite_info)
+
+print(iotsites)
+siteconfig =  list(SiteConfig.objects.filter(id=1).values('name','mapbox_access_token'))
+for m in range(len(siteconfig)):
+    contexts_info = {'name':siteconfig[m]['name'],'token':siteconfig[m]['mapbox_access_token'],'iotsites':iotsites}
+contexts.append(contexts_info)
+print(contexts)
+#    return render(request,'temp.html',{ 'mapbox_access_token': mapbox_access_token, 'sitelist': sitelist })
+#return TemplateResponse(request, 'temp.html',
+#                            {'contexts': contexts})
+
+
+

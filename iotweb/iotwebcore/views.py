@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from .forms import CustomerForm
-from iotwebcore.models import IoTSite
+from iotwebcore.models import IoTSite,SiteConfig
 
 # Create your views here.
 
@@ -19,16 +19,24 @@ def testws(request):
 def temp(request):
     userid = request.session.get('_auth_user_id', None)
     username = request.user
-
-    sitelist = []
+    
+    iotsites = []
+    contexts = []
     result = list(IoTSite.objects.filter(user=1).all().values())
     #print("full list")
     for n in range(len(result)):
-        site_info = {'id':n, 'name': result[n]['name'],'longitude': result[n]['longitude'],'latitude':result[n]['latitude']}
-        sitelist.append(site_info)
-#    return render(request,'temp.html',{ 'mapbox_access_token': mapbox_access_token, 'sitelist': sitelist })
+        iotsite_info = {'id':n, 'name': result[n]['name'],'longitude': result[n]['longitude'],'latitude':result[n]['latitude']}
+        iotsites.append(iotsite_info)
+
+    #print(iotsites)
+    siteconfig =  list(SiteConfig.objects.filter(id=1).values('name','mapbox_access_token'))
+    for m in range(len(siteconfig)):
+        contexts_info = {'name':siteconfig[m]['name'],'token':siteconfig[m]['mapbox_access_token'],'iotsites':iotsites}
+    contexts.append(contexts_info)
+    #print(contexts)
+
     return TemplateResponse(request, 'temp.html',
-                                {'sitelist': sitelist})
+                                {'contexts': contexts})
 
 """
     mylist = []
