@@ -33,12 +33,29 @@ print(result)
 print("full list")
 for n in range(len(result)):
     print(result[n]['name'],result[n]['longitude'],result[n]['latitude'])
-"""
+
+
 
 mylist = []
 result = list(IoTSite.objects.filter(user=1).all().values())
+print(result)
 print("full list")
 for n in range(len(result)):
     site_info = {"name": result[n]['name'],"longitude": result[n]['longitude'],"latitude": result[n]['latitude']}
     mylist.append(site_info)
 print(mylist)
+"""
+
+sitelist = []
+geometry = {}
+properties = {}
+coordinates = []    
+result = list(IoTSite.objects.filter(user=1).all().values())
+print(result)
+print("sitelist is:")
+for n in range(len(result)):
+    site_info = {'id':n, 'name': result[n]['name'],'longitude': result[n]['longitude'],'latitude':result[n]['latitude']}
+    sitelist.append(site_info)
+print(sitelist)
+    
+#    print("now is",n,"longitude",longitude,"latitude",latitude)

@@ -1,0 +1,25 @@
+{% extends "base_logged_in_t.html" %}
+{% load static %}
+
+{% block sidebar %}
+
+       {% if user.is_authenticated %}
+        <!-- Side-Nav -->
+        <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">
+
+            <!-- d-* hides the Sidebar in smaller devices. Its items can be kept on the Navbar 'Menu' -->
+            <div id="sidebar-contents">
+                <!-- Bootstrap List Group -->
+                {% block sidebar_content %}{% endblock %}
+                <ul id="collapsator" class="list-group">
+                    <a href="#top" data-toggle="sidebar-collapse" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <div class="d-flex w-100 justify-content-start align-items-center">
+                            <span id="collapse-icon" class="digi-menu-icon fas fa-fw fa-lg mr-3"></span>
+                            <span id="collapse-text" class="menu-collapsed">Collapse</span>
+                        </div>
+                    </a>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+{% endblock %}

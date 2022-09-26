@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'iotwebcore.apps.IotwebcoreConfig',
     'members.apps.MembersConfig',
+    'solo.apps.SoloAppConfig',
     'channels'
 ]
 

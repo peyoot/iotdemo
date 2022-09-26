@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.template.response import TemplateResponse
 from .forms import CustomerForm
 from iotwebcore.models import IoTSite
 
@@ -19,6 +20,17 @@ def temp(request):
     userid = request.session.get('_auth_user_id', None)
     username = request.user
 
+    sitelist = []
+    result = list(IoTSite.objects.filter(user=1).all().values())
+    #print("full list")
+    for n in range(len(result)):
+        site_info = {'id':n, 'name': result[n]['name'],'longitude': result[n]['longitude'],'latitude':result[n]['latitude']}
+        sitelist.append(site_info)
+#    return render(request,'temp.html',{ 'mapbox_access_token': mapbox_access_token, 'sitelist': sitelist })
+    return TemplateResponse(request, 'temp.html',
+                                {'sitelist': sitelist})
+
+"""
     mylist = []
     result = list(IoTSite.objects.filter(user=1).all().values())
     #print("full list")
@@ -29,6 +41,7 @@ def temp(request):
 #    Just pass these as an entry of the dictionary in above, and then render it in template
 #    return render(request,'temp.html',{'iotsite': site_info})
 #    return render(request,'temp.html',{'user': {'uname': username, 'id': userid}})
+"""
 
 def about(request):
     submitted = False
@@ -53,4 +66,5 @@ def map(request):
     return render(request,'map.html',{ 'mapbox_access_token': mapbox_access_token })
 
 def bttest(request):
-    return render(request,'bttest.html',{})
+    mapbox_access_token = 'pk.eyJ1IjoicGV5b290IiwiYSI6ImNsNXFxdnpwdzIwNnkzaXE5cXB5OGpjYzIifQ.a6yMgV25ozwagcciK7vDtA'
+    return render(request,'bttest.html',{ 'mapbox_access_token': mapbox_access_token })
