@@ -16,94 +16,31 @@
   <!-- Create a container for the map. -->
   <div id='map' width="100%" style='height:600px'></div>
 
-  <script>
-    mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
 
-    const geojson = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [120.00, 31.00]
-            },
-            properties: {
-                title: '<h5>East China Solar Farm</h5>Digi Shanghai Solar Demonstration Center',
-                description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed capacity: 100MW <br> Current Power:  11MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
-                'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
-                'iconSize': [80,80]
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-            type: 'Point',
-            coordinates: [109.43, 36.00]
-            },
-            properties: {
-            title: '<h5>Northwest Solar Farm</h5>Digi Northwest Solar IoT demostration center ',
-            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed Capacity: 100MW <br> Current Power:   11 MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
-                'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
-            'iconSize': [80,80]
-            }
-          }
-        ]
-    };
-
-
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/outdoors-v11',
-      center: [120.00, 30.00],
-      zoom: 4
-    });
-
-
-    // Add markers to the map.
-    for (const feature of geojson.features) {
-        // Create a DOM element for each marker.
-        const el = document.createElement('div');
-        const width = feature.properties.iconSize[0];
-        const height = feature.properties.iconSize[1];
-        el.className = 'marker';
-        el.style.backgroundImage = `url(https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg)`;
-        el.style.width = `${width}px`;
-        el.style.height = `${height}px`;
-        
-
-        el.addEventListener('click', () => {
-            window.alert(feature.properties.message);
-        });
-
-        // Add markers to the map.
-        new mapboxgl.Marker(el)
-        .setLngLat(feature.geometry.coordinates)
-        .setPopup(
-           new mapboxgl.Popup({ offset: 25 }) // add popups
-           .setHTML(
-               `${feature.properties.title}<p>${feature.properties.description}</p>`
-           )
-       )
-        .addTo(map);
-    }
-
-      </script>
-
-    
-
-    test after map, 
-
-   
-
-    more test
 {% endblock %}
 
 {% block javascript %}
     <!-- Local JS files and functions -->
+        <!-- Local JS files and functions -->
+     
     <script type="text/javascript" src="{% static 'js/portal-map.js' %}"></script>
-    <script>
- 
+    
+    here's site config:
+    {% for item in contexts %}
+        
+        {{ item.name }}
+        {{ item.token }}
+        <p>
+        here is iotsites
+        </p>
+        {% for d in item.iotsites %}
+        {{ d.name }}
+        {% endfor %}
+      
+    {% endfor %}
+   
+   <script>
+        
 
     // Initialize the map.
     initMap();
@@ -113,24 +50,9 @@
     document.write((Math.random()*(15-10) + 10).toFixed(2))
    
     </script>
-    <p>
-       
+  
 
 
-        here is contextes:
-
-        {% for item in contexts %}
-        
-            {{ item.name }}
-            {{ item.mapbox_access_token }}
-            <p>
-            here is iotsites
-            </p>
-            {% for d in item.iotsites %}
-            {{ d.name }}
-            {% endfor %}
-          
-        {% endfor %}
             
         </p>
 

@@ -1,0 +1,9 @@
+#IoTdemo 物联网演示程序
+
+[English](README.mds)
+
+这是一个托管在github上的开源实时物联网程序，用于演示基于XBee的无线网关组成的本地无线网络和互联网web程序之间的实时通讯的物联网平台程序。整个演示程序分为两个部分：iotweb和mqttdevice。其中iotweb是程序的web展示界面，mqttdevice则可用于网关或是智能设备，用于向iotweb发送数据和接收指令。两者之间通过MQTT协议实现实时通讯，通信层面上采用异步的方式，大幅提高效率，经优化后可用于生产环境。本演示程序同时支持AWSIOT和自建MQTT Broker两种方式来实现运营。通过AWSIOT则可继续将采集到的数据通过Lambda来构建各种数据池并实现多端协同应用。
+
+程序亮点：支持本地数据库，可作为本地的SCADA程序，同时支持云端websocket通讯。MQTT，Websocket采用异步Channel的方式进行实时通讯。在Django中实现MQTT异步和Web端通讯的资料在互联网上几乎没有，因此IoTweb程序作为物联网web实时程序的最佳参考。网关程序MQTT则采用多线程MQTT通道来实现多个网络节点的同步数据采集与更新。
+
+本程序目前仍在开发中，更多功能后续更新中...

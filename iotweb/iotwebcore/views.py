@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from .forms import CustomerForm
 from iotwebcore.models import IoTSite,SiteConfig
+from json import dumps
 
 # Create your views here.
 

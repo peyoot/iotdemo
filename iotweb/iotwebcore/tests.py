@@ -3,6 +3,7 @@ from django.forms.models import model_to_dict
 from iotwebcore.models import IoTSite, SiteConfig
 from django.contrib import auth
 from members.models import SiteUser
+from json import dumps
 
 #can use annotate or simple counts
 
@@ -82,6 +83,8 @@ print(contexts)
 #    return render(request,'temp.html',{ 'mapbox_access_token': mapbox_access_token, 'sitelist': sitelist })
 #return TemplateResponse(request, 'temp.html',
 #                            {'contexts': contexts})
-
+dataJSON = dumps(contexts)
+print("dumps in here:")
+print (dataJSON)
 
 

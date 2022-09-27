@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-const mapbox_access_token = 'pk.eyJ1IjoicGV5b290IiwiYSI6ImNsNXFxdnpwdzIwNnkzaXE5cXB5OGpjYzIifQ.a6yMgV25ozwagcciK7vDtA'
+
 const POP_UP_CONTENT = "" +
     "<div class='marker-info'>" +
     "    <div class='marker-info-title'>" +
@@ -64,6 +64,9 @@ var solarFarms = {};
 var exploringFarm = false;
 
 var markersZIndex = 0;
+
+var data = JSON.parse("{{contexts|escapejs}}");
+mapboxgl.accessToken = data.token ;
 
 // Initialize and add the map.
 function initMap() {
