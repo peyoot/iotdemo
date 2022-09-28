@@ -65,15 +65,16 @@ var exploringFarm = false;
 
 var markersZIndex = 0;
 
-var data = JSON.parse("{{contexts|escapejs}}");
-mapboxgl.accessToken = data.token ;
+
+//var data = JSON.parse("{{contexts|escapejs}}");
+//mapboxgl.accessToken = data.token ;
 
 // Initialize and add the map.
 function initMap() {
-    // The location of westchina
+    // The location of Zhongwei.
     let zhongwei = [105.36, 37.10];
 
-    // The map, centered at westchina
+    // The map, centered at Uluru.
     map_configuration = {
         container: 'map',
         style: 'mapbox://styles/mapbox/outdoors-v11',
@@ -81,12 +82,15 @@ function initMap() {
         zoom: 4    
     }
     map = new mapboxgl.Map(map_configuration);
+
+ 
 }
+
 
 //execute after views.py response with a list of farm (from database)
 function getSolarFarms() {
     //construct each solarfarm
-    for item in sitelist
+    for ( let item in sitelist )
         solarfarms[item.id].name = item.name
         solarfarms[item.id].longitude = item.longitude
         solarfarms[item.id].latitude = item.latitude
@@ -105,8 +109,14 @@ function getSolarFarms() {
     $("#farms-list").append(farmDiv);
 
 }
+
+// get BJ time
+function gettime() {
+    return new Date(new Date().getTime()+(parseInt(new Date().getTimezoneOffset()/60) + 8)*3600*1000).getHours();
+}
+
 // Callback executed when the list of farms is requested.
-function getSmartFarmsCallback(response) {
+function getSolarFarmsCallback(response) {
     // First, check if there was any error in the request.
     if (response["error_msg"] != null) {
         // Show toast with error.
@@ -141,50 +151,49 @@ function getSmartFarmsCallback(response) {
     if (readFarms == null || readFarms.length == 0)
         return;
 
-    // Create empty LatLngBounds object.
-    let bounds = new google.maps.LatLngBounds();
+
 
     // Create the farm online marker icon.
     let farmOnlineMarkerIcon = {
         url: "static/images/map_marker.png",
-        size: new google.maps.Size(52, 66),
-        scaledSize: new google.maps.Size(52, 66),
-        origin: new google.maps.Point(0, 0),
+  
     };
 
     // Create the farm offline marker icon.
     let farmOfflineMarkerIcon = {
         url: "static/images/map_marker_off.png",
-        size: new google.maps.Size(52, 66),
-        scaledSize: new google.maps.Size(52, 66),
-        origin: new google.maps.Point(0, 0),
+
     };
 
+
+    
     // Process farms.
-    for (let smartFarm of readFarms) {
+    for (let solarFarm of readFarms) {
         // Add the farm to the dictionary.
-        smartFarms[smartFarm["main_controller"]] = smartFarm;
+        solarFarms[solarFarm["id"]] = solarFarm;
 
         // Get farm location.
-        let farmLocation = {
-                            lat: smartFarm["location"][0],
-                            lng: smartFarm["location"][1]
-                        };
+        let farmLocation = [solarFarm.longitude,solarFarm.latitude];
+        let farmCapacity = solarFarm.capacity;
+        let farmCurrent = Math.random()*((2*farmCapacity/3-farmCapacity/2) + farmCapacity/2).toFixed(2);
+        timenow = gettime();
+        if(timenow >= 18 && timenow <=23 || timenow >=0 && timenow <=6) {
+            farmCurrent = 0
+        }
+
+
         // Create a marker for the farm.
         let markerIcon = farmOnlineMarkerIcon;
-        let markerClass = CLASS_MARKER_ON;
-        if (smartFarm["online"] == false) {
-            markerIcon = farmOfflineMarkerIcon;
-            markerClass = CLASS_MARKER_OFF
-        }
+        
+        
         let marker = new MarkerWithLabel({
             position     : farmLocation,
             map          : map,
             icon         : markerIcon,
             draggable    : false,
-            labelContent : smartFarm["name"].toUpperCase(),
+            labelContent : solarFarm["name"].toUpperCase(),
             labelClass   : markerClass,
-            labelAnchor  : new google.maps.Point(0, -5),
+  
         });
 
         markersZIndex++;
@@ -194,9 +203,7 @@ function getSmartFarmsCallback(response) {
 
         // Create an info window.
         let infoWindowContent = getFarmInfoWindowContent(smartFarm["main_controller"]);
-        let infoWindow = new google.maps.InfoWindow({
-            content: infoWindowContent
-        });
+        let infoWindow = ""
         infoWindow.setZIndex(markersZIndex);
 
         // Add the info window to the windows dictionary.
@@ -229,7 +236,6 @@ function getSmartFarmsCallback(response) {
     // Restore the zoom level after the map is done scaling.
     var listener = map.addListener("idle", () => {
         map.setZoom(5);
-        google.maps.event.removeListener(listener);
     });
 
     // Hide the loading panel of the map.

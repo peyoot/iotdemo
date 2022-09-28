@@ -1,3 +1,4 @@
+"""
 import paho.mqtt.client as mqttc
 from random import randrange,uniform
 import time
@@ -5,7 +6,7 @@ import ssl
 import os
 from django.conf import settings
 
-#class mqttAPP():
+class mqttAPP():
 
     AWSIOT_ENABLED = False
     #define gateway device that will managed by gateway
@@ -84,8 +85,6 @@ from django.conf import settings
 
 
     def wait_for(client, msgType, period=1, wait_time=20, running_loop=False):
-        """Will wait for a particular event gives up after period*wait_time, Default=10
-    seconds.Returns True if succesful False if fails"""
         # running loop is true when using loop_start or loop_forever
         client.running_loop = running_loop  #
         wcount = 0
@@ -123,10 +122,7 @@ from django.conf import settings
 
     def client_loop(client, broker, port, cacert, certfile, keyfile, device_type, device_mac, loop_function=None, keepalive=300,
                     loop_delay=10, run_forever=False):
-        """runs a loop that will auto reconnect and subscribe to topics
-        pass topics as a list of tuples. You can pass a function to be
-        called at set intervals determined by the loop_delay
-        """
+
         client.run_flag = True
         client.broker = broker
         
@@ -315,3 +311,4 @@ from django.conf import settings
 #client.on_message = on_message
 #client.tls_set(ca_certs=cacert, certfile=certfile, keyfile=keyfile, cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
 #client.connect(broker, mqtt_port, keepalive)
+"""

@@ -1,9 +1,11 @@
+from unittest import result
 from django.test import TestCase
 from django.forms.models import model_to_dict
 from iotwebcore.models import IoTSite, SiteConfig
 from django.contrib import auth
 from members.models import SiteUser
 from json import dumps
+from django.http import HttpResponseRedirect,JsonResponse
 
 #can use annotate or simple counts
 
@@ -64,7 +66,7 @@ result = list(SiteConfig.objects.filter(id=1).values('name','mapbox_access_token
 #result = SiteConfig.objects.get(id=1)
 print(result)
 
-"""
+
 
 iotsites = []
 contexts = []
@@ -86,5 +88,33 @@ print(contexts)
 dataJSON = dumps(contexts)
 print("dumps in here:")
 print (dataJSON)
+"""
+config = SiteConfig.objects.get()
+
+print(config.name)
+print(config.mapbox_access_token)
 
 
+
+solar_farms = []
+result = list(IoTSite.objects.filter(user=1).all().values())
+
+for n in range(len(result)):
+    iotsite_info = {'id':n, 'name': result[n]['name'],'longitude': result[n]['longitude'],'latitude':result[n]['latitude']}
+    solar_farms.append(iotsite_info)
+
+print(solar_farms)
+jsf = JsonResponse({"farms": solar_farms},
+                            status=200)
+print("jsonresponse:")
+print(jsf)
+"""
+if len(solar_farms) > 0:
+        return JsonResponse({"farms": [solar_farm.to_json() for solar_farm
+                                       in solar_farms]},
+                            status=200)
+    else:
+        return JsonResponse({ID_ERROR_TITLE: NO_FARMS_TITLE,
+                             ID_ERROR_MSG: NO_FARMS_MSG,
+                             ID_ERROR_GUIDE: SETUP_MODULES_GUIDE})
+"""

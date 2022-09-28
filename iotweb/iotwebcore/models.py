@@ -53,11 +53,14 @@ NODE_TYPE = (
             )
 
 class IoTSite(models.Model):
+    """capacity for solarfarm is capacity, for other site is gateway number
+    """
     name = models.CharField('Site Name', default='demo', max_length=100)
     iot_type = models.CharField(choices=IOT_TYPE,max_length=10)
     user = models.ForeignKey(SiteUser, on_delete=models.CASCADE, blank=True, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
+    capacity = models.IntegerField()
     enable_autolist = models.BooleanField(default=True)
 
     def __str__(self):

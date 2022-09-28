@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [           
+
+        {
+            "name": "Django",
+            "type": "python",
+            "request": "launch",
+            "stopOnEntry": false,
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver"
+            ],
+            "django": true
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Edge against localhost",
+            "url": "http://localhost:8000",
+            "webRoot": "${workspaceFolder}"
+        }
+
+    ],
+ 
+    "compounds": [{
+            "name": "Django/Web",
+            "configurations": ["Django", "Edge against localhost"]
+            }
+        ]
+}
