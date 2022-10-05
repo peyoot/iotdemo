@@ -875,7 +875,7 @@ body {
 
 .farms-list-entry {
   color: white;
-  background-color: var(--digi-gray);
+  /*background-color: var(--digi-gray); */
   cursor: pointer;
   padding: 10px 17px;
   width: 100%;

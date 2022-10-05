@@ -42,8 +42,8 @@ const POP_UP_CONTENT = "" +
     "        <div id='@@ID@@-BUTTON-LOADING' class='marker-info-button-loading' style='display: none'>" +
     "    </div>" +
     "</div>";
-    const FARM_LIST_ENTRY = "" +
-    "<div onclick='showInfoWindow(\"@@ID@@\")' class='farms-list-entry'>" +
+const FARM_LIST_ENTRY = "" +
+    "<div onclick='showPopup(\"@@ID@@\")' class='farms-list-entry'>" +
     "    <div class='d-flex w-100 justify-content-start align-items-center'>" +
     "        <span class='digi-menu-icon fas fa-seedling fa-fw fa-lg mr-3'></span>" +
     "        <span>@@NAME@@</span>" +
@@ -57,9 +57,12 @@ const CLASS_STATUS_OFF = "marker-info-value-status-off";
 var map;
 
 var farmMarkers = {};
-var farmPopups = {};
+var farmPopup = {};
+var farmFeatureList = [];
+
 
 var solarFarms = {};
+var farmPopups = {};
 
 var exploringFarm = false;
 
@@ -102,7 +105,7 @@ function getSolarFarms() {
 
     // Add a new farm entry to the list of farms.
     let farmDivContent = FARM_LIST_ENTRY;
-    farmDivContent = farmDivContent.replace(/@@ID@@/g, smartFarm["main_controller"]);
+    farmDivContent = farmDivContent.replace(/@@ID@@/g, solarFarm["id"]);
     farmDivContent = farmDivContent.replace(/@@NAME@@/g, smartFarm["name"].toUpperCase());
     let farmDiv = document.createElement("div");
     farmDiv.innerHTML = farmDivContent;
@@ -165,7 +168,7 @@ function getSolarFarmsCallback(response) {
 
     };
 
-
+    let farmPopupHTML = POP_UP_CONTENT;
     
     // Process farms.
     for (let solarFarm of readFarms) {
@@ -178,127 +181,58 @@ function getSolarFarmsCallback(response) {
         let farmCurrent = Math.random()*((2*farmCapacity/3-farmCapacity/2) + farmCapacity/2).toFixed(2);
         timenow = gettime();
         if(timenow >= 18 && timenow <=23 || timenow >=0 && timenow <=6) {
-            farmCurrent = 0
+            farmCurrent = 0;
         }
 
 
+        // now create marker and popup
+        // marker can be create from solarFarms[], but nee to create a farmPopup[]
+
+
+        //we've already have map init before callback
+        // create features of farms first
+
+        //var farmFeature = {'type':'Feature',
+        //                'geometry':{'type':'points','coordinates':farmLocation},
+        //                'properties': {'title': solarFarm.name,'description':farmPopupHtml}    
+        //            };
+        //farmFeatureList.append(farmFeature);
+        
+        farmPopup = {
+            farmLocation: farmLocation,
+            farmCapacity: farmCapacity,
+            farmCurrent: farmCurrent,
+            farmTitle: solarFarm.name
+
+        }
+
+        farmPopups[solarFarm["id"]] = farmPopup;
+
         // Create a marker for the farm.
-        let markerIcon = farmOnlineMarkerIcon;
-        
-        
-        let marker = new MarkerWithLabel({
-            position     : farmLocation,
-            map          : map,
-            icon         : markerIcon,
-            draggable    : false,
-            labelContent : solarFarm["name"].toUpperCase(),
-            labelClass   : markerClass,
-  
-        });
-
-        markersZIndex++;
-
-        // Extend the bounds to include the marker's position.
-        bounds.extend(marker.position);
-
-        // Create an info window.
-        let infoWindowContent = getFarmInfoWindowContent(smartFarm["main_controller"]);
-        let infoWindow = ""
-        infoWindow.setZIndex(markersZIndex);
-
-        // Add the info window to the windows dictionary.
-        farmWindows[smartFarm["main_controller"]] = infoWindow;
-
-        // Add the marker to the markers dictionary.
-        farmMarkers[smartFarm["main_controller"]] = marker;
-
-        // Add a click listener to toggle the info window.
-        marker.addListener("click", () => {
-            marker.setZIndex(markersZIndex);
-            farmWindows[smartFarm["main_controller"]].setZIndex(markersZIndex);
-            markersZIndex++;
-            toggleInfoWindow(smartFarm["main_controller"]);
-        });
+        // original to get farmPopup and farmMarker which used in showPopup(solarFarmID)
+        // but actually we'll add marker just here, and show popup just fly to 
+        farmPopupHTML = farmPopupHTML.replace(/@@ID@@/g, solarFarm.name);
 
         // Add a new farm entry to the list of farms.
         let farmDivContent = FARM_LIST_ENTRY;
-        farmDivContent = farmDivContent.replace(/@@ID@@/g, smartFarm["main_controller"]);
-        farmDivContent = farmDivContent.replace(/@@NAME@@/g, smartFarm["name"].toUpperCase());
+        farmDivContent = farmDivContent.replace(/@@ID@@/g, solarFarm["id"]);
+        farmDivContent = farmDivContent.replace(/@@NAME@@/g, solarFarm["name"].toUpperCase());
         let farmDiv = document.createElement("div");
         farmDiv.innerHTML = farmDivContent;
         $("#farms-list").append(farmDiv);
     }
 
-    // Fit the map to the newly inclusive bounds.
-    map.fitBounds(bounds);
-    map.panToBounds(bounds);
-
-    // Restore the zoom level after the map is done scaling.
-    var listener = map.addListener("idle", () => {
-        map.setZoom(5);
-    });
-
-    // Hide the loading panel of the map.
-    hidePopup($(".map-loading-wrapper"), $(".popup-loading"));
 }
 
-// Generates and returns the content of the information window for the farm with the given ID.
-function getFarmInfoWindowContent(farmID) {
-    let mainController = smartFarms[farmID]["main_controller"];
-    let name = smartFarms[farmID]["name"].toUpperCase();
-    let location = smartFarms[farmID]["location"];
-    let online = smartFarms[farmID]["online"];
-
-    // Clone the content template.
-    let content = INFO_WINDOW_CONTENT;
-    // Update the IDs of the information window.
-    content = content.replace(/@@ID@@/g, mainController)
-    // Set the information window title.
-    content = content.replace("@@NAME@@", name);
-    // Configure the status.
-    if (online) {
-        content = content.replace("@@STATUS-CLASS@@", CLASS_STATUS_ON);
-        content = content.replace("@@STATUS@@", "Online");
-    } else {
-        content = content.replace("@@STATUS-CLASS@@", CLASS_STATUS_OFF);
-        content = content.replace("@@STATUS@@", "Offline");
-    }
-    // Configure the location.
-    content = content.replace("@@LOCATION@@", location[0] + "<br>" + location[1]);
-
-    return content;
-}
-
-// Shows or hides the info window corresponding to the farm with the given ID.
-function toggleInfoWindow(farmID) {
-   let infoWindow = farmWindows[farmID];
-   if (infoWindow != null) {
-       let infoWindowMap = infoWindow.getMap();
-       if (infoWindowMap !== null && typeof infoWindowMap !== "undefined") {
-           infoWindow.close();
-       } else if (farmMarkers[farmID] != null) {
-           infoWindow.setContent(getFarmInfoWindowContent(farmID));
-           infoWindow.open(map, farmMarkers[farmID]);
-       }
-   }
-}
-
-//        popup_info = { 
-//    type: 'Feature', 
-//    geometry: { type:'Point',coordinates:[ result[n]['longitude'],result[n]['latitude']],},
-//    properties: { title:  result[n]['name'],description:"des1",'iconsize':[80,80] }
-//}
-
-// Shows the info window of the farm with the given ID.
-function showPopup(farmID) {
-    let Popup = farmPopups[farmID];
-    let marker = farmMarkers[farmID];
-    if (Popup == null || farmMarkers[farmID] == null)
+function showPopup(solarFarmID) {
+    let Popup = farmPopups[solarFarmID];
+    let marker = farmMarkers[solarFarmID];
+    if (Popup == null || farmMarkers[solarFarmID] == null)
         return;
 
     // Pan to the marker location.
     let markerLoc = {
-        center: [farmMarker[farmID].longitude, farmMarker[farmID].latitude],
+        center: [farmMarker[solarFarmID].longitude, farmMarker[solarFarmID].latitude],
         zoom: 7,
         pitch: 45 
         }
