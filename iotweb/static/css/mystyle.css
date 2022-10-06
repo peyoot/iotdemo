@@ -87,9 +87,23 @@ map {
   overflow: visible !important;
 }
 
+#marker {
+  background-image:  url('https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg');
+  background-size: cover;
+  margin: -30px 0px;
+  width: 60px;
+  height: 60px;
+  display: block;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
 .marker {
   background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
   background-size: cover;
+  margin: -30px 0px;
   width: 50px;
   height: 50px;
   display: block;
@@ -114,48 +128,63 @@ map {
   color: forestgreen;
   font-weight: bold;
   font-size: 16px;
-  }
-  
+}
 
-  .marker-info-button-container {
-    padding: 5px;
-    position: relative;
-    height: 50px;
-  }
-  
-  .marker-info-button, .marker-info-button-loading {
-    font-size: 18px;
-    position: absolute;
-    border: none;
-    color: white;
-    left: 8%;
-    width: 84%;
-    height: 40px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 5px 5px 5px 5px;
-  }
-  
-  .marker-info-button {
-    cursor: pointer;
-    background-color: var(--digi-green);
-  }
-  
-  .marker-info-button:focus, .marker-info-button:checked {
-    border: none;
-    outline: 0px auto transparent;
-  }
-  
-  .marker-info-button-loading {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 0px;
-  }
-  
-  .marker-info-button-off {
-    background-color: #DC3545;
-  }
-  
+.marker-info-desc {
+  text-align: left;
+  font-size: 15px;
+}
+
+.marker-info-element {
+    text-align:center;
+    font-weight: bold;
+    font-size: 15px;
+    min-height: 36px;
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+    display: table;
+}
+
+.marker-info-button-container {
+  padding: 5px;
+  position: relative;
+  height: 50px;
+}
+
+.marker-info-button, .marker-info-button-loading {
+  font-size: 18px;
+  position: absolute;
+  border: none;
+  color: white;
+  left: 8%;
+  width: 84%;
+  height: 40px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.marker-info-button {
+  cursor: pointer;
+  background-color: var(--digi-green);
+}
+
+.marker-info-button:focus, .marker-info-button:checked {
+  border: none;
+  outline: 0px auto transparent;
+}
+
+.marker-info-button-loading {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0px;
+}
+
+.marker-info-button-off {
+  background-color: #DC3545;
+}
+
 
   /* MAP */
 .farms-list-title {
@@ -170,7 +199,7 @@ map {
 
 .farms-list-entry {
   color: white;
-  background-color: var(--digi-gray);
+  /*background-color: var(--digi-gray);*/
   cursor: pointer;
   padding: 10px 17px;
   width: 100%;

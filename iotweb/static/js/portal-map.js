@@ -20,23 +20,22 @@ const POP_UP_CONTENT = "" +
     "    <div class='marker-info-title'>" +
     "        @@NAME@@" +
     "    </div>" +
+    "   <div class='marker-info-desc'> @@DESCRIPTION@@ </div>      " +
     "    <hr/>" +
-    "    <div class='marker-info-element'>" +
+    "    <div class='marker-info-element'>" + 
+
     "        <div class='marker-info-icon'>" +
     "            <img src='../static/images/info_status.png' height='36px' alt='Status' />" +
     "        </div>" +
     "        <div class='marker-info-value @@STATUS-CLASS@@'>" +
     "            @@STATUS@@" +
     "        </div>" +
+    "         <br/> " +
+    "       <span style='padding=5px'>Installed Capacity:  @@FARMCAPACITY@@  MW<br/>" +
+    "       Current Power:  @@FARMCURRENT@@  MW <br/>   </span>" +
+
     "    </div>" +
-    "    <div class='marker-info-element'>" +
-    "        <div class='marker-info-icon'>" +
-    "            <img src='../static/images/info_location.png' height='36px' alt='Location' />" +
-    "        </div>" +
-    "        <div class='marker-info-value'>" +
-    "            @@LOCATION@@" +
-    "        </div>" +
-    "    </div>" +
+ 
     "    <div class='marker-info-button-container' style='margin-top: 5px;'>" +
     "        <button id='@@ID@@-BUTTON' class='marker-info-button' onclick=\"exploreFarm('@@ID@@')\">Explore</button>" +
     "        <div id='@@ID@@-BUTTON-LOADING' class='marker-info-button-loading' style='display: none'>" +
@@ -93,24 +92,21 @@ function initMap() {
 //execute after views.py response with a list of farm (from database)
 function getSolarFarms() {
     //construct each solarfarm
-    for ( let item in sitelist )
+    for ( let item in sitelist ) {
         solarfarms[item.id].name = item.name
         solarfarms[item.id].longitude = item.longitude
         solarfarms[item.id].latitude = item.latitude
         solarfarms[item.id].capability = 30
         solarfarms[item.id].currentpower = (Math.random()*(15-10) + 10).toFixed(2)
-      
-    endfor
-
-
-    // Add a new farm entry to the list of farms.
-    let farmDivContent = FARM_LIST_ENTRY;
-    farmDivContent = farmDivContent.replace(/@@ID@@/g, solarFarm["id"]);
-    farmDivContent = farmDivContent.replace(/@@NAME@@/g, smartFarm["name"].toUpperCase());
-    let farmDiv = document.createElement("div");
-    farmDiv.innerHTML = farmDivContent;
-    $("#farms-list").append(farmDiv);
-
+    
+        // Add a new farm entry to the list of farms.
+        let farmDivContent = FARM_LIST_ENTRY;
+        farmDivContent = farmDivContent.replace(/@@ID@@/g, solarFarm["id"]);
+        farmDivContent = farmDivContent.replace(/@@NAME@@/g, smartFarm["name"].toUpperCase());
+        let farmDiv = document.createElement("div");
+        farmDiv.innerHTML = farmDivContent;
+        $("#farms-list").append(farmDiv);
+    }
 }
 
 // get BJ time
@@ -168,7 +164,7 @@ function getSolarFarmsCallback(response) {
 
     };
 
-    let farmPopupHTML = POP_UP_CONTENT;
+
     
     // Process farms.
     for (let solarFarm of readFarms) {
@@ -176,12 +172,14 @@ function getSolarFarmsCallback(response) {
         solarFarms[solarFarm["id"]] = solarFarm;
 
         // Get farm location.
-        let farmLocation = [solarFarm.longitude,solarFarm.latitude];
+        let farmLocation = [Number(solarFarm.longitude),Number(solarFarm.latitude)];
         let farmCapacity = solarFarm.capacity;
+        let farmStatus = "In Operation"
         let farmCurrent = Math.random()*((2*farmCapacity/3-farmCapacity/2) + farmCapacity/2).toFixed(2);
         timenow = gettime();
         if(timenow >= 18 && timenow <=23 || timenow >=0 && timenow <=6) {
             farmCurrent = 0;
+            farmStatus = "Closed"
         }
 
 
@@ -197,12 +195,20 @@ function getSolarFarmsCallback(response) {
         //                'properties': {'title': solarFarm.name,'description':farmPopupHtml}    
         //            };
         //farmFeatureList.append(farmFeature);
-        
+        let farmPopupHTML = POP_UP_CONTENT;
+        farmPopupHTML = farmPopupHTML.replace(/@@NAME@@/g, solarFarm.name);
+        farmPopupHTML = farmPopupHTML.replace(/@@DESCRIPTION@@/g, solarFarm.description);
+        farmPopupHTML = farmPopupHTML.replace(/@@FARMCAPACITY@@/g, farmCapacity);
+        farmPopupHTML = farmPopupHTML.replace(/@@FARMCURRENT@@/g, farmCurrent);
+        farmPopupHTML = farmPopupHTML.replace(/@@STATUS@@/g, farmStatus);
+
         farmPopup = {
             farmLocation: farmLocation,
             farmCapacity: farmCapacity,
             farmCurrent: farmCurrent,
-            farmTitle: solarFarm.name
+            farmTitle: solarFarm.name,
+            farmDescription: solarFarm.description,
+            farmPopupHTML: farmPopupHTML
 
         }
 
@@ -211,7 +217,6 @@ function getSolarFarmsCallback(response) {
         // Create a marker for the farm.
         // original to get farmPopup and farmMarker which used in showPopup(solarFarmID)
         // but actually we'll add marker just here, and show popup just fly to 
-        farmPopupHTML = farmPopupHTML.replace(/@@ID@@/g, solarFarm.name);
 
         // Add a new farm entry to the list of farms.
         let farmDivContent = FARM_LIST_ENTRY;
@@ -220,27 +225,34 @@ function getSolarFarmsCallback(response) {
         let farmDiv = document.createElement("div");
         farmDiv.innerHTML = farmDivContent;
         $("#farms-list").append(farmDiv);
+
+        showPopup(solarFarm["id"]);
+
     }
 
 }
 
 function showPopup(solarFarmID) {
     let Popup = farmPopups[solarFarmID];
-    let marker = farmMarkers[solarFarmID];
-    if (Popup == null || farmMarkers[solarFarmID] == null)
+    /*let marker = farmMarkers[solarFarmID];*/
+    if (Popup == null )
         return;
 
+    const markerLoc = Popup.farmLocation;
+
     // Pan to the marker location.
-    let markerLoc = {
-        center: [farmMarker[solarFarmID].longitude, farmMarker[solarFarmID].latitude],
-        zoom: 7,
-        pitch: 45 
+    /*let markerLoc = {
+        center: Popup.farmLocation,
+        essential: true
         }
     
     map.flyTo(markerLoc);
+    */
 
     // Create a DOM element for each marker.
     const el = document.createElement('div');
+    el.id = 'marker';
+    /*
     const width = feature.properties.iconSize[0];
     const height = feature.properties.iconSize[1];
     el.className = 'marker';
@@ -248,18 +260,19 @@ function showPopup(solarFarmID) {
     el.style.width = `${width}px`;
     el.style.height = `${height}px`;
     //el.style.backgroundSize = '100%';
-
+    
     el.addEventListener('click', () => {
         window.alert(feature.properties.message);
     });
-    new mapboxgl.Marker(el)
-    .setLngLat(feature.geometry.coordinates)
-    .setPopup(
+     */
+    const mapbox_popup = new mapboxgl.Popup({ offset: 25 }).setHTML(Popup.farmPopupHTML);
+/*
         new mapboxgl.Popup({ offset: 25 }) // add popups
         .setHTML(
-        `${feature.properties.title}<p>${feature.properties.description}</p>`
-        )
-    )
+        `${Popup.farmTitle}<p>popup.farmFeatures-details</p>`*/
+    new mapboxgl.Marker(el)
+    .setLngLat(markerLoc)
+    .setPopup(mapbox_popup)
     .addTo(map);
 }
 

@@ -25,7 +25,7 @@ def home(request):
     #return render(request,'index.html',{ 'mapbox_access_token': mapbox_access_token })
     if request.user.is_authenticated:
         if request.method == "GET":
-            return TemplateResponse(request, 'temp.html',{ 'mapbox_access_token': siteconfig.mapbox_access_token})
+            return TemplateResponse(request, 'map-portal.html',{ 'mapbox_access_token': siteconfig.mapbox_access_token})
     else:
         return render(request,'index.html',{ 'mapbox_access_token': siteconfig.mapbox_access_token})
  
