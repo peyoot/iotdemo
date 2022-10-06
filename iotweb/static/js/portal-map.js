@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ 
 
 
 const POP_UP_CONTENT = "" +
@@ -41,6 +41,37 @@ const POP_UP_CONTENT = "" +
     "        <div id='@@ID@@-BUTTON-LOADING' class='marker-info-button-loading' style='display: none'>" +
     "    </div>" +
     "</div>";
+
+*/
+
+    const POP_UP_CONTENT = "" +
+    "<div class='marker-info'>" +
+    "    <div class='marker-info-title'>" +
+    "        @@NAME@@" +
+    "    </div>" +
+    "   <div class='marker-info-desc'> @@DESCRIPTION@@ </div>      " +
+    "    <hr/>" +
+    "    <div class='marker-info-element'>" + 
+
+    "        <div class='marker-info-icon'>" +
+    "            <img src='../static/images/info_status.png' height='36px' alt='Status' />" +
+    "        <span class='marker-info-value @@STATUS-CLASS@@'>" +
+    "            @@STATUS@@" +
+    "        </span>" +
+    "        </div>" +
+
+    "         <br/> " +
+    "       <span style='padding=5px'>Installed Capacity:  @@FARMCAPACITY@@  MW<br/>" +
+    "       Current Power:  @@FARMCURRENT@@  MW <br/>   </span>" +
+
+    "    </div>" +
+ 
+    "    <div class='marker-info-button-container' style='margin-top: 5px;'>" +
+    "        <button id='@@ID@@-BUTTON' class='marker-info-button' onclick=\"exploreFarm('@@ID@@')\">Explore</button>" +
+    "        <div id='@@ID@@-BUTTON-LOADING' class='marker-info-button-loading' style='display: none'>" +
+    "    </div>" +
+    "</div>";
+
 const FARM_LIST_ENTRY = "" +
     "<div onclick='showPopup(\"@@ID@@\")' class='farms-list-entry'>" +
     "    <div class='d-flex w-100 justify-content-start align-items-center'>" +
