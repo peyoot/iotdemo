@@ -196,11 +196,13 @@ function getSolarFarmsCallback(response) {
         let farmLocation = [Number(solarFarm.longitude),Number(solarFarm.latitude)];
         let farmCapacity = solarFarm.capacity;
         let farmStatus = "In Operation"
+        let farmStatusClass = CLASS_STATUS_ON
         let farmCurrent = (Math.random()*(2*farmCapacity/3-farmCapacity/2) + farmCapacity/2).toFixed(2);
         timenow = gettime();
         if(timenow >= 18 && timenow <=23 || timenow >=0 && timenow <=6) {
             farmCurrent = 0;
-            farmStatus = "Closed"
+            farmStatus = "Closed";
+            farmStatusClass = CLASS_STATUS_OFF;
         }
 
 
@@ -212,6 +214,8 @@ function getSolarFarmsCallback(response) {
         farmPopupHTML = farmPopupHTML.replace(/@@FARMCAPACITY@@/g, farmCapacity);
         farmPopupHTML = farmPopupHTML.replace(/@@FARMCURRENT@@/g, farmCurrent);
         farmPopupHTML = farmPopupHTML.replace(/@@STATUS@@/g, farmStatus);
+        farmPopupHTML = farmPopupHTML.replace(/@@STATUS-CLASS@@/g, farmStatusClass);
+        farmPopupHTML = farmPopupHTML.replace(/@@ID@@/g, solarFarm.id);
 
         farmPopup = {
             farmLocation: farmLocation,
@@ -287,11 +291,11 @@ function showPopup(solarFarmID) {
 // Opens the dashboard of the farm with the given ID.
 function exploreFarm(farmID) {
     // Disable the farm button.
-    disableFarmButton(farmID, true);
+    //disableFarmButton(farmID, true);
 
     // Load the dashboard of the farm.
-    let farmName = smartFarms[farmID]["name"];
-    window.open("../dashboard/?controller_id=" + farmID + "&farm_name=" + farmName, "_self");
+    let farmName = solarFarms[farmID]["name"];
+    window.open("../dashboard/?id=" + farmID + "&farm_name=" + farmName, "_self");
 }
 
 // Disables the button of the farm with the given ID.

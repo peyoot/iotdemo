@@ -9,5 +9,6 @@ urlpatterns = [
     path('test2',views.test2,name='test2'),
     path('map',views.map,name='map'),
     path('bttest',views.bttest,name='bttest'),
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('ajax/get_solar_farms', views.get_solar_farms, name='get_solar_farms'),
 ]

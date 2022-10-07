@@ -6,6 +6,8 @@ from iotwebcore.models import IoTSite,SiteConfig
 import json
 # from json import dumps
 
+PARAM_FARM_ID = "id"
+PARAM_FARM_NAME = "farm_name"
 # Create your views here.
 ID_ERROR = "error"
 ID_ERROR_TITLE = "error_title"
@@ -105,3 +107,66 @@ def map(request):
 def bttest(request):
     mapbox_access_token = 'pk.eyJ1IjoicGV5b290IiwiYSI6ImNsNXFxdnpwdzIwNnkzaXE5cXB5OGpjYzIifQ.a6yMgV25ozwagcciK7vDtA'
     return render(request,'bttest.html',{ 'mapbox_access_token': mapbox_access_token })
+
+
+def dashboard(request):
+    if not request_has_params(request):
+        return redirect("/")
+
+
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            return TemplateResponse(request, 'dashboard.html',
+                                    get_request_data(request))
+    else:
+        return redirect("members/login_user")
+
+
+def get_request_data(request):
+    """
+    Gets the request data and saves it in a dictionary to be distributed as
+    context variables.
+
+    Args:
+        request (:class:`.WSGIRequest`): The request to get the data from.
+
+    Returns:
+        dic: A dictionary containing the context variables.
+    """
+    data = {}
+    if request_has_id(request):
+        data[PARAM_FARM_ID] = request.GET[PARAM_FARM_ID]
+    if request_has_name(request):
+        data[PARAM_FARM_NAME] = request.GET[PARAM_FARM_NAME]
+    return data
+
+def request_has_id(request):
+    """
+    Returns whether the request has the 'controller_id' parameter.
+
+    Returns:
+        `True` if the request has the parameter, `False` otherwise.
+    """
+    return (PARAM_FARM_ID in request.GET
+            and request.GET[PARAM_FARM_ID] is not None)
+
+
+def request_has_name(request):
+    """
+    Returns whether the request has the 'farm_name' parameter.
+
+    Returns:
+        `True` if the request has the parameter, `False` otherwise.
+    """
+    return (PARAM_FARM_NAME in request.GET
+            and request.GET[PARAM_FARM_NAME] is not None)
+
+
+def request_has_params(request):
+    """
+    Returns whether the request has the required parameters.
+
+    Returns:
+        `True` if the request has the required parameters, `False` otherwise.
+    """
+    return request_has_id(request) and request_has_name(request)
