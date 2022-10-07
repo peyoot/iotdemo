@@ -154,11 +154,6 @@ function getSolarFarmsCallback(response) {
         $("#info-title").text(response["error_title"]);
         $("#info-message").html(response["error_msg"] + response["error_guide"]);
 
-        // Hide the loading panel of the map.
-        hidePopup($(".map-loading-wrapper"), $(".popup-loading"));
-
-        // Show help dialog.
-        showPopup($(".map-loading-wrapper"), $(".popup-info"));
         return;
     }
     if (response["error"] != null) {
@@ -166,11 +161,6 @@ function getSolarFarmsCallback(response) {
         toastr.error(response["error"]);
         $("#info-message").html(response["error"]);
 
-        // Hide the loading panel of the map.
-        hidePopup($(".map-loading-wrapper"), $(".popup-loading"));
-
-        // Show help dialog.
-        showPopup($(".map-loading-wrapper"), $(".popup-info"));
         return;
     }
 
@@ -206,7 +196,7 @@ function getSolarFarmsCallback(response) {
         let farmLocation = [Number(solarFarm.longitude),Number(solarFarm.latitude)];
         let farmCapacity = solarFarm.capacity;
         let farmStatus = "In Operation"
-        let farmCurrent = Math.random()*((2*farmCapacity/3-farmCapacity/2) + farmCapacity/2).toFixed(2);
+        let farmCurrent = (Math.random()*(2*farmCapacity/3-farmCapacity/2) + farmCapacity/2).toFixed(2);
         timenow = gettime();
         if(timenow >= 18 && timenow <=23 || timenow >=0 && timenow <=6) {
             farmCurrent = 0;
@@ -215,17 +205,7 @@ function getSolarFarmsCallback(response) {
 
 
         // now create marker and popup
-        // marker can be create from solarFarms[], but nee to create a farmPopup[]
 
-
-        //we've already have map init before callback
-        // create features of farms first
-
-        //var farmFeature = {'type':'Feature',
-        //                'geometry':{'type':'points','coordinates':farmLocation},
-        //                'properties': {'title': solarFarm.name,'description':farmPopupHtml}    
-        //            };
-        //farmFeatureList.append(farmFeature);
         let farmPopupHTML = POP_UP_CONTENT;
         farmPopupHTML = farmPopupHTML.replace(/@@NAME@@/g, solarFarm.name);
         farmPopupHTML = farmPopupHTML.replace(/@@DESCRIPTION@@/g, solarFarm.description);
@@ -257,9 +237,32 @@ function getSolarFarmsCallback(response) {
         farmDiv.innerHTML = farmDivContent;
         $("#farms-list").append(farmDiv);
 
-        showPopup(solarFarm["id"]);
+        showMarker(solarFarm["id"]);
 
     }
+
+}
+
+function showMarker(solarFarmID) {
+    let Popup = farmPopups[solarFarmID];
+    /*let marker = farmMarkers[solarFarmID];*/
+    if (Popup == null )
+        return;
+
+    const markerLoc = Popup.farmLocation;
+
+    
+   
+    // Create a DOM element for each marker.
+    const el = document.createElement('div');
+    el.id = 'marker';
+
+    const mapbox_popup = new mapboxgl.Popup({ offset: 25 }).setHTML(Popup.farmPopupHTML);
+
+    new mapboxgl.Marker(el)
+    .setLngLat(markerLoc)
+    .setPopup(mapbox_popup)
+    .addTo(map);
 
 }
 
@@ -271,40 +274,14 @@ function showPopup(solarFarmID) {
 
     const markerLoc = Popup.farmLocation;
 
-    // Pan to the marker location.
-    /*let markerLoc = {
-        center: Popup.farmLocation,
-        essential: true
-        }
-    
-    map.flyTo(markerLoc);
-    */
+    map.flyTo({ center: markerLoc });
+    mapbox_popup = new mapboxgl.Popup({ offset: 25 }).setHTML(Popup.farmPopupHTML);
+    const popups = document.getElementsByClassName("mapboxgl-popup");
+    if (popups.length) {
+        popups[0].remove();
+    }
 
-    // Create a DOM element for each marker.
-    const el = document.createElement('div');
-    el.id = 'marker';
-    /*
-    const width = feature.properties.iconSize[0];
-    const height = feature.properties.iconSize[1];
-    el.className = 'marker';
-    el.style.backgroundImage = `url(https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg)`;
-    el.style.width = `${width}px`;
-    el.style.height = `${height}px`;
-    //el.style.backgroundSize = '100%';
-    
-    el.addEventListener('click', () => {
-        window.alert(feature.properties.message);
-    });
-     */
-    const mapbox_popup = new mapboxgl.Popup({ offset: 25 }).setHTML(Popup.farmPopupHTML);
-/*
-        new mapboxgl.Popup({ offset: 25 }) // add popups
-        .setHTML(
-        `${Popup.farmTitle}<p>popup.farmFeatures-details</p>`*/
-    new mapboxgl.Marker(el)
-    .setLngLat(markerLoc)
-    .setPopup(mapbox_popup)
-    .addTo(map);
+    mapbox_popup.setLngLat(markerLoc).addTo(map);
 }
 
 // Opens the dashboard of the farm with the given ID.
