@@ -211,6 +211,9 @@ def dashboard(request):
             except IoTSite.DoesNotExist:
                 solar_farm = None
             mapbox_access_token = siteconfig.mapbox_access_token
+            #prepare request data to passing
+            additional = {"token":mapbox_access_token,"solar_farm":solar_farm}
+
             #get gateways
             gateways = list(IoTDevice.objects.filter(site_id = solar_farm.id))
 
@@ -219,7 +222,7 @@ def dashboard(request):
             #return TemplateResponse(request, 'dashboard.html',
             #            get_request_data(request))
             return TemplateResponse(request, 'dashboard.html',
-                                    get_request_data(request,mapbox_access_token))
+                                    get_request_data(request,additional))
     else:
         return redirect("members/login_user")
 
@@ -236,7 +239,7 @@ def gateway(request):
     else:
         return redirect("members/login_user")
 
-def get_request_data(request,mapbox_access_token):
+def get_request_data(request,additional=None):
     """
     Gets the request data and saves it in a dictionary to be distributed as
     context variables.
@@ -248,7 +251,8 @@ def get_request_data(request,mapbox_access_token):
         dic: A dictionary containing the context variables.
     """
     data = {}
-    data["mapbox_access_token"] = mapbox_access_token;
+
+    data["mapbox_access_token"] = additional["token"]
     if request_has_id(request):
         data[PARAM_FARM_ID] = request.GET[PARAM_FARM_ID]
     if request_has_name(request):
