@@ -77,7 +77,7 @@ class IoTDevice(models.Model):
     device_name = models.CharField('device_name',max_length=100)
     device_type = models.CharField(choices=DEVICE_TYPE,max_length=10)
     device_mac = models.CharField('device_mac',max_length=100)
-    site_name = models.ForeignKey(IoTSite, on_delete=models.CASCADE, verbose_name='IoT Site')
+    site_id = models.ForeignKey(IoTSite, on_delete=models.CASCADE, verbose_name='IoT Site')
     row = models.IntegerField(default=1,verbose_name="row")
     col = models.IntegerField(default=1,verbose_name="column")
     Lat_offset = models.IntegerField(default=0)

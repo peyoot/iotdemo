@@ -3,6 +3,10 @@
 pip-log.txt
 pip-delete-this-directory.txt
 
+# npm
+iotweb/package-lock.json
+iotweb/package.json
+iotweb/node_modules
 
 # Django stuff:
 *.log

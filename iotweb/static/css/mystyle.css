@@ -209,3 +209,39 @@ map {
 .farms-list-entry:hover {
   background-color: var(--digi-green);
 }
+
+/* IRRIGATION STATIONS MAP */
+.devices-map-toolbar {
+  min-height: 42px;
+  background-color: var(--digi-gray);
+  
+}
+
+.devices-map-status {
+  float: left;
+  color: white;
+  padding-top: 7px;
+  padding-left: 10px;
+  font-size: 18px;
+  display: none;
+}
+
+.devices-map-button {
+  float: right;
+  padding: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.devices-map {
+
+  display: flex;
+  flex-flow: column;
+ 
+}
+
+.devices-map-control {
+  flex-grow: 1;
+  height: 200px
+}

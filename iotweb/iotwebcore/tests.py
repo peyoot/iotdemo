@@ -1,11 +1,13 @@
+import json
 from unittest import result
 from django.test import TestCase
 from django.forms.models import model_to_dict
-from iotwebcore.models import IoTSite, SiteConfig
+from iotwebcore.models import IoTSite, SiteConfig, IoTDevice
 from django.contrib import auth
 from members.models import SiteUser
 from json import dumps
 from django.http import HttpResponseRedirect,JsonResponse
+
 
 #can use annotate or simple counts
 
@@ -23,6 +25,7 @@ for index in range(counts):
     print(record)
 """
 from django.db.models import Count
+from django.core import serializers
 
 #index = IoTSite.objects.annotate(Count('id'))
 #print(index[0].name)
@@ -89,6 +92,8 @@ dataJSON = dumps(contexts)
 print("dumps in here:")
 print (dataJSON)
 """
+
+"""
 config = SiteConfig.objects.get()
 
 print(config.name)
@@ -108,7 +113,7 @@ jsf = JsonResponse({"farms": solar_farms},
                             status=200)
 print("jsonresponse:")
 print(jsf)
-"""
+
 if len(solar_farms) > 0:
         return JsonResponse({"farms": [solar_farm.to_json() for solar_farm
                                        in solar_farms]},
@@ -118,3 +123,13 @@ if len(solar_farms) > 0:
                              ID_ERROR_MSG: NO_FARMS_MSG,
                              ID_ERROR_GUIDE: SETUP_MODULES_GUIDE})
 """
+PARAM_FARM_NAME = "Digi Solar Farm"
+#solar_farm = IoTSite.objects().get('Site Name' == PARAM_FARM_NAME)
+#gateways = list(IoTDevice.objects.filter(site_name = PARAM_FARM_NAME))
+gateways = list(IoTDevice.objects.all().values())
+print(gateways)
+
+temp = json.dumps(gateways, ensure_ascii=False)   
+print('json.dumps')  
+print(temp) 
+      

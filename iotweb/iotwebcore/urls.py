@@ -10,5 +10,7 @@ urlpatterns = [
     path('map',views.map,name='map'),
     path('bttest',views.bttest,name='bttest'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('gateway/', views.gateway, name='gateway'),
     path('ajax/get_solar_farms', views.get_solar_farms, name='get_solar_farms'),
+    path('ajax/get_farm_status', views.get_farm_status, name='get_farm_status'),
 ]

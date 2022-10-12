@@ -19,22 +19,22 @@ Digi Demo - Dashboard
                                         <div id="info-message" class="popup-text">-</div>
                                     </div>
                                     <div class="map-loading-wrapper element-grayed">
-                                        <div class="stations-map">
-                                            <div class="stations-map-toolbar">
-                                                <div id="stations-map-status" class="stations-map-status">
+                                        <div class="devices-map">
+                                            <div class="devices-map-toolbar">
+                                                <div id="devices-map-status" class="devices-map-status">
                                                     <i class="fas fa-circle-notch fa-spin" style="margin-right: 2px;"></i> Refreshing values...
                                                 </div>
-                                                <div id="map-button-center" class="stations-map-button" onclick="centerStations()">
+                                                <div id="map-button-center" class="devices-map-button" onclick="centerStations()">
                                                     <img id="map-button-center-img" src="{% static 'images/map_center.png' %}" width="32px" data-toggle="tooltip" data-placement="bottom" title="Center stations in the map">
                                                 </div>
-                                                <div id="map-button-show-info" class="stations-map-button" onclick="setInfoWindowsVisible(true)">
+                                                <div id="map-button-show-info" class="devices-map-button" onclick="setInfoWindowsVisible(true)">
                                                     <img id="map-button-show-info-img" src="{% static 'images/map_show_info.png' %}" width="32px" data-toggle="tooltip" data-placement="bottom" title="Show all stations information panels">
                                                 </div>
-                                                <div id="map-button-hide-info" class="stations-map-button" onclick="setInfoWindowsVisible(false)">
+                                                <div id="map-button-hide-info" class="devices-map-button" onclick="setInfoWindowsVisible(false)">
                                                     <img id="map-button-hide-info-img" src="{% static 'images/map_hide_info.png' %}" width="32px" data-toggle="tooltip" data-placement="bottom" title="Hide all stations information panels">
                                                 </div>
                                             </div>
-                                            <div id="stations-map" class="stations-map-control"></div>
+                                            <div id="devices-map" class="devices-map-control"></div>
                                         </div>
                                         <div id="map-error" class="map-error">
                                         </div>
@@ -213,42 +213,24 @@ Digi Demo - Dashboard
             </div>
 {% endblock %}
 {% block javascript_inner %}
-    <script>
+<script>
+    // Initialize the map.
+    mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
+    
+    
     $(document).ready(function() {
-        // Initialize the valve toggle button and add action to do when toggled.
-        $("#toggle-valve").bootstrapToggle();
 
-        // Initialize the map.
+
         initMap();
 
-        // Change the color of the map toolbar icons when hovering.
-        $("#map-button-center").on({
-            "mouseover" : function() {
-                $("#map-button-center-img").attr("src", "{% static 'images/map_center_green.png' %}");
-            },
-            "mouseout" : function() {
-                $("#map-button-center-img").attr("src", "{% static 'images/map_center.png' %}");
-            }
-        });
-        $("#map-button-hide-info").on({
-            "mouseover" : function() {
-                $("#map-button-hide-info-img").attr("src", "{% static 'images/map_hide_info_green.png' %}");
-            },
-            "mouseout" : function() {
-                $("#map-button-hide-info-img").attr("src", "{% static 'images/map_hide_info.png' %}");
-            }
-        });
-        $("#map-button-show-info").on({
-            "mouseover" : function() {
-                $("#map-button-show-info-img").attr("src", "{% static 'images/map_show_info_green.png' %}");
-            },
-            "mouseout" : function() {
-                $("#map-button-show-info-img").attr("src", "{% static 'images/map_show_info.png' %}");
-            }
-        });
-
-        // Get farm status.
+        console.log('dom ready in dashboard.html');
+     
+        
+        farm_id = response["farm_id"];
+        test = gateways["device_mac"];
+        console.log(farmID);
         getFarmStatus();
+
     });
-    </script>
+</script>
 {% endblock %}

@@ -24,6 +24,7 @@
 {% block javascript_outer %}
 <script>
 $( document ).ready(function() {
+    console.log('dom ready in base_logged_in_t!');
     $("#profile-container").on({
         "mouseover" : function() {
             $("#profile-logo").attr("src", "{% static 'images/profile_green.png' %}");

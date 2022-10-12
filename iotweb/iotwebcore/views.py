@@ -1,8 +1,9 @@
+from gc import callbacks
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect,JsonResponse
 from django.template.response import TemplateResponse
 from .forms import CustomerForm
-from iotwebcore.models import IoTSite,SiteConfig
+from iotwebcore.models import IoTDevice, IoTSite,SiteConfig
 import json
 # from json import dumps
 
@@ -15,7 +16,12 @@ ID_ERROR_MSG = "error_msg"
 ID_ERROR_GUIDE = "error_guide"
 NO_FARMS_TITLE = "No solar farms found."
 NO_FARMS_MSG = "No solar farms have been added to your DRM account. "
-SETUP_MODULES_GUIDE = "Please, verify with your account"
+SETUP_MODULES_GUIDE = "Please, verify with your account and add devices in backend"
+ID_GATEWAYS = "gateways"
+NO_GATEWAYS_TITLE = "No iot devices or gateways found."
+NO_GATEWAYS_MSG = "there's no iot device defined for this site"
+NO_NODES_TITLE = "No nodes found."
+NO_NODES_MSG = "there's no iot nodes defined for this site"
 
 def home(request):
     siteconfig = SiteConfig.objects.get()
@@ -78,8 +84,84 @@ def get_solar_farms(request):
                              ID_ERROR_MSG: NO_FARMS_MSG,
                              ID_ERROR_GUIDE: SETUP_MODULES_GUIDE})
 
-    
+def get_farm_status(request):
+    """
+    Returns a dictionary containing the status of the farm (gateways and nodes).
+    """
+    #userid = request.session.get('_auth_user_id', None)
+    #username = request.user.get_username()
+    authentication = request.user.is_authenticated
+    if authentication:
+        if not request.is_ajax or request.method != "POST":
+            return JsonResponse(
+                {"error": "AJAX request must be sent using POST"},
+                status=400)
+    else:
+        return redirect('/access/login')
 
+    try:
+        # Get the controller ID from the POST request.
+        data = json.loads(request.body.decode(request.encoding))
+        farm_id = data[PARAM_FARM_ID]
+        first = data["first"] if "first" in data else False
+
+        farm_status = {}
+
+        # Get Iotdevices(gateways).
+        gateways = list(IoTDevice.objects.filter(site_id=farm_id).all().values())
+ 
+        if len(gateways) == 0:
+            farm_status[ID_ERROR_TITLE] = NO_GATEWAYS_TITLE
+            farm_status[ID_ERROR_MSG] = NO_GATEWAYS_MSG
+        else:
+            farm_status[ID_GATEWAYS] = [gateway.to_json() for gateway in gateways]
+
+        # Get nodes.
+        # for gateway in gateways, list nodes
+        #nodes = list(IoTDevice.objects.filter(site_id=farm_id).all().values())
+        """"
+        if len(nodes) == 0:
+            farm_status[ID_ERROR_TITLE] = NO_NODES_TITLE
+            farm_status[ID_ERROR_MSG] = NO_NODES_MSG
+            farm_status[ID_ERROR_GUIDE] = SETUP_MODULES_GUIDE
+        else:
+            farm_status[ID_NODES] = [station.to_json() for station in stations]
+        """
+
+        # Get the farm status.
+        status = {"gateways": gateways,"nodes": ""}
+        farm_status["status"] = status
+
+        return JsonResponse(farm_status, status=200)
+    except Exception as e:
+        return JsonResponse({ID_ERROR: str(e)})
+
+
+def get_farm_details(request):
+    userid = request.session.get('_auth_user_id', None)
+    username = request.user.get_username()
+    authentication = request.user.is_authenticated
+    farmName = request.POST.get('name')
+    #farmID = request.POST['id']
+    solar_farm = IoTSite.objects().get(name = farmName)
+
+    #get gateways details
+
+    gateways = solar_farm.id
+
+    #get trackers details
+
+    trackers = list(IoTSite.objects.filter(user=userid).all().values())
+
+    if len(gateways) > 0:
+
+        return JsonResponse({"gateways": [gateway for gateway in gateways]},status=200)
+    else:
+        return JsonResponse({ID_ERROR_TITLE: NO_FARMS_TITLE,
+                             ID_ERROR_MSG: NO_FARMS_MSG,
+                             ID_ERROR_GUIDE: SETUP_MODULES_GUIDE})
+
+    
 
 
 def about(request):
@@ -116,13 +198,45 @@ def dashboard(request):
 
     if request.user.is_authenticated:
         if request.method == "GET":
+            farmID = request.GET[PARAM_FARM_ID]
+            farmName = request.GET[PARAM_FARM_NAME]
+            
+
+            # get siteconfig
+            siteconfig = SiteConfig.objects.get()
+
+            #get solar_farm
+            try:
+                solar_farm = IoTSite.objects.get(id = farmID)
+            except IoTSite.DoesNotExist:
+                solar_farm = None
+            mapbox_access_token = siteconfig.mapbox_access_token
+            #get gateways
+            gateways = list(IoTDevice.objects.filter(site_id = solar_farm.id))
+
+            #gate trackers
+            #trackers = {}
+            #return TemplateResponse(request, 'dashboard.html',
+            #            get_request_data(request))
             return TemplateResponse(request, 'dashboard.html',
-                                    get_request_data(request))
+                                    get_request_data(request,mapbox_access_token))
     else:
         return redirect("members/login_user")
 
 
-def get_request_data(request):
+def gateway(request):
+    if not request_has_params(request):
+        return redirect("/")
+
+
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            return TemplateResponse(request, 'gateway.html',
+                                    get_request_data(request))
+    else:
+        return redirect("members/login_user")
+
+def get_request_data(request,mapbox_access_token):
     """
     Gets the request data and saves it in a dictionary to be distributed as
     context variables.
@@ -134,6 +248,7 @@ def get_request_data(request):
         dic: A dictionary containing the context variables.
     """
     data = {}
+    data["mapbox_access_token"] = mapbox_access_token;
     if request_has_id(request):
         data[PARAM_FARM_ID] = request.GET[PARAM_FARM_ID]
     if request_has_name(request):

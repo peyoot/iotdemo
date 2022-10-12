@@ -64,7 +64,7 @@
             <ul class="nav flex-column text-white w-100">
                 
                 <li  class="nav-item ">
-                <a href="#" class="nav-link text-white"><i class="bx bxs-dashboard"></i><span class="mx-2">Dashboard</span></a>
+                <a data-pjax href="/dashboard/" class="nav-link text-white"><i class="bx bxs-dashboard"></i><span class="mx-2">Dashboard</span></a>
                 </li>
 
                 <li  class="nav-item ">
@@ -72,15 +72,15 @@
                 </li>
 
                 <li  class="nav-item ">
-                    <a href="#" class="nav-link text-white"><i class="bx bx-hdd"></i><span class="mx-2">Gateway</span></a>
+                    <a data-pjax href="/gateway/" class="nav-link text-white"><i class="bx bx-hdd"></i><span class="mx-2">Gateway</span></a>
                 </li>
 
                 <li  class="nav-item ">
-                    <a href="#" class="nav-link text-white"><i class="bx bx-cable-car"></i><span class="mx-2">Tracker</span></a>
+                    <a data-pjax href="/tracker/" class="nav-link text-white"><i class="bx bx-cable-car"></i><span class="mx-2">Tracker</span></a>
                 </li>
 
                 <li  class="nav-item ">
-                    <a href="#" class="nav-link text-white"><i class="bx bx-user-check"></i><span class="mx-2">History</span></a>
+                    <a data-pjax href="/history/" class="nav-link text-white"><i class="bx bx-user-check"></i><span class="mx-2">History</span></a>
                 </li>
 
                 <li  class="nav-item ">
@@ -135,9 +135,7 @@
 {% endblock %}
 
 {% block page_content %}
-        <div id="loading">
-            <img id="loading-image" src="/static/images/loading.gif" alt="Loading..." />
-        </div>
+  
         <div id="pjax-container">
             {% block inner_content %}{% endblock %}
             {% block javascript_inner %}{% endblock %}
@@ -145,19 +143,16 @@
 {% endblock %}
 
 {% block javascript %}
-    <!-- Local JS files and functions -->
+ 
     <script type="text/javascript" src="{% static 'js/widgets.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/schedule.js' %}"></script>
+
     <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/history.js' %}"></script>
     <script>
+     
+    
     $(document).ready(function() {
-        // Don't show the loading spinner at the beginning. Initial page
-        // load is full, so not relying on AJAX.
-        $("#loading").hide();
-
-         
-
+        console.log('dom ready in sidebar_t.html');
+    
         // Set up PJAX.
         if ($.support.pjax) {
             $.pjax.defaults.timeout = 20000;
@@ -171,13 +166,13 @@
             });
 
             $(document).on("pjax:send", function(e) {
-                setSelectedSection(e.currentTarget.activeElement);
+                //setSelectedSection(e.currentTarget.activeElement);
                 $("#pjax-container").hide();
-                $("#loading").show();
+  
             });
 
             $(document).on("pjax:complete", function() {
-                $("#loading").hide();
+
                 $("#pjax-container").show();
 
             });
@@ -192,7 +187,7 @@
         }
 
         // Set the selected section.
-        setSelectedSection();
+       // setSelectedSection();
 
         // Set the name of the selected farm.
         $("#farm_name").html("{{ farm_name }}".toUpperCase());
@@ -239,11 +234,11 @@
         $(".time-button").click(setTimeFactor);
 
         // Check the farm connection status.
-        checkFarmConnectionStatus();
+       // checkFarmConnectionStatus();
 
         // Get the weather condition and time factor from the irrigation controller.
-        getWeatherCondition();
-        getTimeFactor();
+       // getWeatherCondition();
+       // getTimeFactor();
 
         // Check farm connectivity in 5 secs.
         setTimeout(checkFarmConnected, 5000, "schedule");
@@ -268,7 +263,5 @@
             });
         }
     }
-
-
     </script>
 {% endblock %}

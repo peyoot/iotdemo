@@ -17,21 +17,13 @@
 var farmConnectionStatus = false;
 var prevFarmConnectionStatus = true;
 
-// Hide submenus
-$("#body-row .collapse").collapse("hide");
-
-// Collapse/Expand icon.
-$("#collapse-icon").addClass("fa-angle-double-left");
 
 // Select click.
 $("#sections > a").click(function() {
     selectSection($(this));
 });
 
-// Collapse click.
-$("[data-toggle=sidebar-collapse]").click(function() {
-    sidebarCollapse();
-});
+
 
 $(".element-grayed").click(function(){return false;});
 
@@ -44,33 +36,6 @@ function selectSection(selectedItem) {
     selectedItem.toggleClass("selected");
 }
 
-// Collapses the sidebar to the left.
-function sidebarCollapse() {
-    $(".menu-collapsed").toggleClass("d-none");
-    $(".sidebar-submenu").toggleClass("d-none");
-    $(".submenu-icon").toggleClass("d-none");
-
-    // Add/Remove right margin.
-    $(".digi-menu-icon").toggleClass("mr-3 mr-0");
-
-    $("#sidebar-container").toggleClass("sidebar-expanded sidebar-collapsed");
-
-    // Treating d-flex/d-none on separators with title.
-    var separatorTitle = $(".sidebar-separator-title");
-    if (separatorTitle.hasClass("d-flex"))
-        separatorTitle.removeClass("d-flex");
-    else
-        separatorTitle.addClass("d-flex");
-
-    // Collapse/Expand icon.
-    $("#collapse-icon").toggleClass("fa-angle-double-left fa-angle-double-right");
-
-    // Make the cards the same height. Wait some time so size is
-    // calculated after the content of the cards expands or collapses.
-    window.setTimeout(function () {
-        $(".adjust-card-height .card").matchHeight();
-    }, 100);
-}
 
 // Shows a popup in front of the given element.
 function showPopup(element, popup) {
