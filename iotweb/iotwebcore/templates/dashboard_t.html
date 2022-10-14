@@ -1,9 +1,99 @@
-{% extends "sidebar_t.html" %}
+{% extends "base_logged_in_sidebar_t.html" %}
 {% load static %}
-{% block title %}
-Digi Demo - Dashboard
+{% block nav_widgets %}
+        <div>
+            <img src="{% static 'images/status_farm.png' %}" class="farm-title-img" title="Farm">
+        </div>
+        <div id="farm_name"></div>
+        <div>
+            <img src="{% static 'images/status_offline.png' %}" id="farm-connection-status" class="farm-title-img" title="Offline">
+        </div>
+        <div class="vertical-separator"></div>
+        <div>
+            <button id="map" class="btn widget-button" type="button" value="0" onclick="window.open('/','_self');">
+                <img src="{% static 'images/map_gray.png' %}" id="map-icon" class="map-icon" data-toggle="tooltip" data-placement="bottom" title="Open Smart Farms map">
+            </button>
+        </div>
+        <div class="vertical-separator"></div>
+        <div class="dropdown digi-gray" id="simulation-container">
+            <button class="btn dropdown-toggle" type="button" id="simulationMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img id="simulation-logo" class="banner-icon" src="{% static 'images/simulation.png' %}">
+            </button>
+            <div class="dropdown-menu shadow-sm simulation-controls-container" aria-labelledby="simulationMenuButton">
+                <p>Simulation controls</p>
+                <div class="card">
+                    <p class="widget-title">Weather condition</p>
+                    <p class="widget-desc">Control the weather condition of the farm. You can change it to see different temperature and moisture values.</p>
+                    <div class="widget-button-container">
+                        <button id="weather-sunny" class="btn widget-button weather-button" type="button" value="0">
+                            <span id="weather-sunny-logo" class="icon-widget weather-icon fas fa-sun fa-2x" title="Change weather to sunny"></span>
+                        </button>
+                        <button id="weather-cloudy" class="btn widget-button weather-button" type="button" value="1">
+                            <span id="weather-cloudy-logo" class="icon-widget weather-icon fas fa-cloud fa-2x" title="Change weather to cloudy"></span>
+                        </button>
+                        <button id="weather-rainy" class="btn widget-button weather-button" type="button" value="2">
+                            <span id="weather-rainy-logo" class="icon-widget weather-icon fas fa-cloud-rain fa-2x" title="Change weather to rainy"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <p class="widget-title">Time</p>
+                    <p class="widget-desc">Control how the time elapses in the farm. You can change it to see the irrigation events faster.</p>
+                    <div class="widget-button-container">
+                        <p id="current-time">00:00:00</p>
+                        <div>
+                            <button id="time-1" class="btn widget-button time-button" type="button" value="1">
+                                <span id="time-speed1-logo" class="icon-widget time-icon fas fa-play fa-2x" title="Change speed to normal"></span>
+                            </button>
+                            <button id="time-2" class="btn widget-button time-button" type="button" value="50">
+                                <span id="time-speed2-logo" class="icon-widget time-icon fas fa-forward fa-2x" title="Change speed to fast"></span>
+                            </button>
+                            <button id="time-3" class="btn widget-button time-button" type="button" value="250">
+                                <span id="time-speed3-logo" class="icon-widget time-icon fas fa-fast-forward fa-2x" title="Change speed to faster"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="vertical-separator"></div>
 {% endblock %}
-{% block inner_content %}
+{% block sidebar_content %}
+<!-- Side-Nav -->
+        <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">
+            <ul class="nav flex-column text-white w-100">
+                
+                <li  class="nav-item ">
+                <a data-pjax href="#" class="nav-link text-white"><i class="bx bxs-dashboard"></i><span class="mx-2">Dashboard</span></a>
+                </li>
+
+                <li  class="nav-item ">
+                    <a href="#" class="nav-link text-white"><i class="bx bx-network-chart"></i><span class="mx-2">Network</span></a>
+                </li>
+
+                <li  class="nav-item ">
+                    <a data-pjax href="/gateway/" class="nav-link text-white"><i class="bx bx-hdd"></i><span class="mx-2">Gateway</span></a>
+                </li>
+
+                <li  class="nav-item ">
+                    <a data-pjax href="/tracker/" class="nav-link text-white"><i class="bx bx-cable-car"></i><span class="mx-2">Tracker</span></a>
+                </li>
+
+                <li  class="nav-item ">
+                    <a data-pjax href="/history/" class="nav-link text-white"><i class="bx bx-user-check"></i><span class="mx-2">History</span></a>
+                </li>
+
+                <li  class="nav-item ">
+                    <a href="#" class="nav-link text-white"><i class="bx bx-conversation"></i><span class="mx-2">Schedule</span></a>
+                </li>   
+                
+            </ul>
+        </div>
+{% endblock %}
+
+{% block page_content %}
+  
+        <div id="pjax-container">
             <div class="row justify-content-lg-center">
                 <div class="col-lg-12 col-xl-9">
                     <div class="column main-row">
@@ -208,22 +298,34 @@ Digi Demo - Dashboard
                     </div>
                 </div>
             </div>
+
+        </div>
 {% endblock %}
-{% block javascript_inner %}
-<script>
+
+{% block javascript %}
+ 
+    <script type="text/javascript" src="{% static 'js/widgets.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
+   
+    <script>
+    // Ready method.
     // Initialize the map.
     mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
-    
-    
+    initMap();
     $(document).ready(function() {
+        // Hide the sidebar collapsator.
+   
 
+        // Get smart farms and place them in the map.
+        //$.post(
+        //    "{% url 'get_farm_status' %}",
+            getFarmStatusCallback
+        //);
 
-        initMap();
-
-        console.log('dom ready in dashboard.html');
-     
-        getFarmStatus();
-
+  
     });
-</script>
+    </script>
 {% endblock %}
+
+

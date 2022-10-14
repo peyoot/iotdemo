@@ -85,6 +85,23 @@ class IoTDevice(models.Model):
 
     def __str__(self):
         return self.device_name
+    
+    def to_json(self):
+        """
+        Returns the object in JSON format.
+
+        """
+        json_dict = {
+            "device_mac": self._device_mac,
+            "device_name": self._device_name,
+            "location": self._location,
+            "site_id": self._site_id,
+            "row": self._row,
+            "col": self._col,
+            "lat_offset": self._lat_offset,
+            "lon_offset": self._lon_offset
+        }
+        return json_dict
 
     
     class Meta:

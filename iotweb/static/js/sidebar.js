@@ -55,13 +55,10 @@ function hidePopup(element, popup) {
 
 // Requests an update on the connection status of the farm.
 function checkFarmConnectionStatus() {
-    $.post(
-        "../ajax/check_farm_connection_status",
-        JSON.stringify({
-            "controller_id": getControllerID()
-        }),
-        updateFarmConnectionStatus
-    );
+   // $.post(
+   //     "../ajax/check_farm_connection_status",
+   //     updateFarmConnectionStatus
+   // );
 }
 
 // Updates the connection status of the farm.

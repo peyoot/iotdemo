@@ -295,7 +295,7 @@ function exploreFarm(farmID) {
 
     // Load the dashboard of the farm.
     let farmName = solarFarms[farmID]["name"];
-    window.open("../dashboard/?id=" + farmID + "&farm_name=" + farmName, "_self");
+    window.open("../dashboard?id=" + farmID + "&farm_name=" + farmName, "_self");
 }
 
 // Disables the button of the farm with the given ID.

@@ -126,10 +126,15 @@ if len(solar_farms) > 0:
 PARAM_FARM_NAME = "Digi Solar Farm"
 #solar_farm = IoTSite.objects().get('Site Name' == PARAM_FARM_NAME)
 #gateways = list(IoTDevice.objects.filter(site_name = PARAM_FARM_NAME))
-gateways = list(IoTDevice.objects.all().values())
-print(gateways)
+#gateways = list(IoTDevice.objects.all().values())
+#print(gateways)
 
-temp = json.dumps(gateways, ensure_ascii=False)   
-print('json.dumps')  
-print(temp) 
-      
+#temp = json.dumps(gateways, ensure_ascii=False)   
+#print('json.dumps')  
+#print(temp) 
+mylist = []
+gateways = list(IoTDevice.objects.filter(site_id="1").all().values())
+for n in range(len(gateways)):
+    gateway_info = {"name": gateways[n]['device_name'],"col": gateways[n]['col'],"row": gateways[n]['row']}
+    mylist.append(gateway_info)
+    print (mylist)

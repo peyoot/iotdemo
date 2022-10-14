@@ -1,112 +1,267 @@
-{% extends 'base_logged_in_sidebar_t.html' %}
+{% extends "base_logged_in_sidebar_t.html" %}
 {% load static %}
-
-{% block toptitle %} <h5>Welcome to Digi AWS IOT Demo Platform </h5> {% endblock %}
-
-{% block sidebar_content %}
-            <div class="d-flex p-3 text-white">
-            Smart farms   
-            </div>
-            <div id="farms-list" >
-            </div>
-
-            <ul class="nav flex-column text-white w-100">
-                <div id="farms-list" class="d-flex aligns-items-center justify-content-center"> test farm
+{% block nav_widgets %}
+        <div>
+            <img src="{% static 'images/status_farm.png' %}" class="farm-title-img" title="Farm">
+        </div>
+        <div id="farm_name"></div>
+        <div>
+            <img src="{% static 'images/status_offline.png' %}" id="farm-connection-status" class="farm-title-img" title="Offline">
+        </div>
+        <div class="vertical-separator"></div>
+        <div>
+            <button id="map" class="btn widget-button" type="button" value="0" onclick="window.open('/','_self');">
+                <img src="{% static 'images/map_gray.png' %}" id="map-icon" class="map-icon" data-toggle="tooltip" data-placement="bottom" title="Open Smart Farms map">
+            </button>
+        </div>
+        <div class="vertical-separator"></div>
+        <div class="dropdown digi-gray" id="simulation-container">
+            <button class="btn dropdown-toggle" type="button" id="simulationMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img id="simulation-logo" class="banner-icon" src="{% static 'images/simulation.png' %}">
+            </button>
+            <div class="dropdown-menu shadow-sm simulation-controls-container" aria-labelledby="simulationMenuButton">
+                <p>Simulation controls</p>
+                <div class="card">
+                    <p class="widget-title">Weather condition</p>
+                    <p class="widget-desc">Control the weather condition of the farm. You can change it to see different temperature and moisture values.</p>
+                    <div class="widget-button-container">
+                        <button id="weather-sunny" class="btn widget-button weather-button" type="button" value="0">
+                            <span id="weather-sunny-logo" class="icon-widget weather-icon fas fa-sun fa-2x" title="Change weather to sunny"></span>
+                        </button>
+                        <button id="weather-cloudy" class="btn widget-button weather-button" type="button" value="1">
+                            <span id="weather-cloudy-logo" class="icon-widget weather-icon fas fa-cloud fa-2x" title="Change weather to cloudy"></span>
+                        </button>
+                        <button id="weather-rainy" class="btn widget-button weather-button" type="button" value="2">
+                            <span id="weather-rainy-logo" class="icon-widget weather-icon fas fa-cloud-rain fa-2x" title="Change weather to rainy"></span>
+                        </button>
+                    </div>
                 </div>
-                <span class="nav-link h3 text-white my-2">Smart farms</span>    
-
-                <li href="#" class="nav-link text-white">
-                  <i class="bx bxs-dashboard"></i>
-                  <span class="mx-2">Dashboard</span>
-                </li>
-                <li href="#" class="nav-link text-white">
-                  <i class='bx bx-network-chart'></i>
-                  <span class="mx-2">Network</span>
-                </li>
-            </ul>
-
+                <div class="card">
+                    <p class="widget-title">Time</p>
+                    <p class="widget-desc">Control how the time elapses in the farm. You can change it to see the irrigation events faster.</p>
+                    <div class="widget-button-container">
+                        <p id="current-time">00:00:00</p>
+                        <div>
+                            <button id="time-1" class="btn widget-button time-button" type="button" value="1">
+                                <span id="time-speed1-logo" class="icon-widget time-icon fas fa-play fa-2x" title="Change speed to normal"></span>
+                            </button>
+                            <button id="time-2" class="btn widget-button time-button" type="button" value="50">
+                                <span id="time-speed2-logo" class="icon-widget time-icon fas fa-forward fa-2x" title="Change speed to fast"></span>
+                            </button>
+                            <button id="time-3" class="btn widget-button time-button" type="button" value="250">
+                                <span id="time-speed3-logo" class="icon-widget time-icon fas fa-fast-forward fa-2x" title="Change speed to faster"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="vertical-separator"></div>
 {% endblock %}
+{% block sidebar_content %}
+<!-- Side-Nav -->
+        <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">
+            <ul class="nav flex-column text-white w-100">
+                
+                <li  class="nav-item ">
+                <a data-pjax href="/dashboard/" class="nav-link text-white"><i class="bx bxs-dashboard"></i><span class="mx-2">Dashboard</span></a>
+                </li>
 
-{% block page_content %}
+                <li  class="nav-item ">
+                    <a href="#" class="nav-link text-white"><i class="bx bx-network-chart"></i><span class="mx-2">Network</span></a>
+                </li>
 
-  <!-- Create a container for the map. -->
-  <div id='map' width="100%" style='height:600px'></div>
+                <li  class="nav-item ">
+                    <a data-pjax href="/gateway/" class="nav-link text-white"><i class="bx bx-hdd"></i><span class="mx-2">Gateway</span></a>
+                </li>
 
-  <script>
-    mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
+                <li  class="nav-item ">
+                    <a data-pjax href="/tracker/" class="nav-link text-white"><i class="bx bx-cable-car"></i><span class="mx-2">Tracker</span></a>
+                </li>
 
-    const geojson = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [120.00, 31.00]
-            },
-            properties: {
-                title: '<h5>East China Solar Farm</h5>Digi Shanghai Solar Demonstration Center',
-                description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed capacity: 100MW <br> Current Power:  11MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
-                'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
-                'iconSize': [80,80]
-            }
-          },
-          {
-            type: 'Feature',
-            geometry: {
-            type: 'Point',
-            coordinates: [109.43, 36.00]
-            },
-            properties: {
-            title: '<h5>Northwest Solar Farm</h5>Digi Northwest Solar IoT demostration center ',
-            description: '<hr><div class=\"marker-info-title\"><img src="{% static "images/info_status.png" %}" height="36px" alt="Status"><span> In Operation <span> <br> <span>Installed Capacity: 100MW <br> Current Power:   11 MWh </span> </div> <div class="marker-info-button-container" style="margin-top: 5px;">        <button id="00000000-00000000-0004F3FF-FF340DC0-BUTTON" class="marker-info-button" onclick="#">Manage</button>        <div id="00000000-00000000-0004F3FF-FF340DC0-BUTTON-LOADING" class="marker-info-button-loading" style="display: none">    </div></div>',
-                'message': 'Please log in to access your solar assets! Make sure you have the appropriate permissions',
-            'iconSize': [80,80]
-            }
-          }
-        ]
-    };
+                <li  class="nav-item ">
+                    <a data-pjax href="/history/" class="nav-link text-white"><i class="bx bx-user-check"></i><span class="mx-2">History</span></a>
+                </li>
 
+                <li  class="nav-item ">
+                    <a href="#" class="nav-link text-white"><i class="bx bx-conversation"></i><span class="mx-2">Schedule</span></a>
+                </li>   
+                
+            </ul>
+        </div>
+        {% endblock %}
 
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/outdoors-v11',
-      center: [120.00, 30.00],
-      zoom: 4
-    });
-
-
-    // Add markers to the map.
-    for (const feature of geojson.features) {
-        // Create a DOM element for each marker.
-        const el = document.createElement('div');
-        const width = feature.properties.iconSize[0];
-        const height = feature.properties.iconSize[1];
-        el.className = 'marker';
-        el.style.backgroundImage = `url(https://www.eccee.com/wp-content/uploads/2022/06/2022081615230995.jpg)`;
-        el.style.width = `${width}px`;
-        el.style.height = `${height}px`;
+        {% block page_content %}
+          
+                <div id="pjax-container">
+                    {% block inner_content %}{% endblock %}
+                    {% block javascript_inner %}{% endblock %}
+                </div>
+        {% endblock %}
         
+{% block javascript %}
+         
 
-        el.addEventListener('click', () => {
-            window.alert(feature.properties.message);
-        });
+<style>
+  .mapboxgl-popup {
+  max-width: 400px;
+  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+  </style>
+  <div id='device_map' width="100%" style='height:600px'></div>
+ 
+  <script>
 
-        // Add markers to the map.
-        new mapboxgl.Marker(el)
-        .setLngLat(feature.geometry.coordinates)
-        .setPopup(
-           new mapboxgl.Popup({ offset: 25 }) // add popups
-           .setHTML(
-               `${feature.properties.title}<p>${feature.properties.description}</p>`
-           )
-       )
-        .addTo(map);
-    }
-
-      </script>
-
+  mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
+  demo_lon=110.33;
+  demo_lat=37.90;
+  const map = new mapboxgl.Map({
+  container: 'device_map',
+  // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [demo_lon, demo_lat],
+  zoom: 15
+  });
+   
+  map.on('load', () => {
+    map.loadImage('{% static "images/block.png" %}', (error, image) => {
+      if (error) throw error;
+      map.addImage('block-icon', image, { 'sdf': true });
+      map.addSource('places', {
+      'type': 'geojson',
+      'data': {
+      'type': 'FeatureCollection',
+      'features': [
+      {
+      'type': 'Feature',
+      'properties': {
+      'title': '01',
+      'description':
+      '<strong>tracker01</strong><p>device 01</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon+0.001, demo_lat]
+      }
+      },
+      {
+      'type': 'Feature',
+      'properties': {
+      'title': 02,
+      'description':
+      '<strong>Tracker 02</strong><p>02</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon+0.002, demo_lat]
+      }
+      },
+      {
+      'type': 'Feature',
+      'properties': {
+      'title': 03,
+      'description':
+      '<strong>Tracer 03</strong><p>03</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon+0.003, demo_lat]
+      }
+      },
+      
+      {
+      'type': 'Feature',
+      'properties': {
+      'title':04,
+      'description':
+      '<strong>Trucker 04</strong><p>working</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon, demo_lat+0.004]
+      }
+      }
+      ]
+      }       // data end
+      });      // addsource end
+      // Add a layer showing the places. #4264fb is blue
     
+      map.addLayer({
+      'id': 'places',
+      'type': 'symbol',
+      'source': 'places',
+      'layout': {
+        'icon-image': 'block-icon',
+        'icon-size': 0.5
+      },
+      'paint': {
+        'icon-color': [
+          'match', // Use the 'match' expression: https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+          ['get', 'title'], // Use the result 'STORE_TYPE' property
+          '01',
+          '#FF8C00',
+          'Pharmacy',
+          '#FF8C00',
+          '#1ee533' // any other store type
+        ]
+      }
+      });
+      /*
+      map.addLayer({
+      'id': 'places',
+      'type': 'circle',
+      'source': 'places',
+      'paint': {
+      'circle-color': '#1ee533',
+      'circle-radius': 6,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff'
+      }
+      });
+      */
+
+    });
+    // Create a popup, but don't add it to the map yet.
+    const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false
+    });
+    map.on('mouseenter', 'places', (e) => {
+     // Change the cursor style as a UI indicator.
+    map.getCanvas().style.cursor = 'pointer';
+   
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const description = e.features[0].properties.description;
+    
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+    
+    // Populate the popup and set its coordinates
+    // based on the feature found.
+    popup.setLngLat(coordinates).setHTML(description).addTo(map);
+    });
+    
+    map.on('mouseleave', 'places', () => {
+    map.getCanvas().style.cursor = '';
+    // popup.remove();
+    });
+  });
+
+
+  var scale = new mapboxgl.ScaleControl({
+			maxWidth: 100,
+			unit: 'metric'
+		});
+	map.addControl(scale, "bottom-left");
+
+  </script>
+
+
 
     test after map
 {% endblock %}

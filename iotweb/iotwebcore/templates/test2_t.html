@@ -1,0 +1,171 @@
+{% extends 'base_logged_in_sidebar.html' %}
+
+{% load static %}
+
+{% block toptitle %} <h5>Welcome to Digi AWS IOT Demo Platform </h5> {% endblock %}
+{% block page_content %}
+
+
+<style>
+  .mapboxgl-popup {
+  max-width: 400px;
+  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+  </style>
+  <div id='device_map' width="100%" style='height:600px'></div>
+ 
+  <script>
+
+  mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
+  demo_lon=110.33;
+  demo_lat=37.90;
+  const map = new mapboxgl.Map({
+  container: 'device_map',
+  // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [demo_lon, demo_lat],
+  zoom: 15
+  });
+   
+  map.on('load', () => {
+    map.loadImage('{% static "images/block.png" %}', (error, image) => {
+      if (error) throw error;
+      map.addImage('block-icon', image, { 'sdf': true });
+      map.addSource('places', {
+      'type': 'geojson',
+      'data': {
+      'type': 'FeatureCollection',
+      'features': [
+      {
+      'type': 'Feature',
+      'properties': {
+      'title': '01',
+      'description':
+      '<strong>tracker01</strong><p>device 01</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon+0.001, demo_lat]
+      }
+      },
+      {
+      'type': 'Feature',
+      'properties': {
+      'title': 02,
+      'description':
+      '<strong>Tracker 02</strong><p>02</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon+0.002, demo_lat]
+      }
+      },
+      {
+      'type': 'Feature',
+      'properties': {
+      'title': 03,
+      'description':
+      '<strong>Tracer 03</strong><p>03</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon+0.003, demo_lat]
+      }
+      },
+      
+      {
+      'type': 'Feature',
+      'properties': {
+      'title':04,
+      'description':
+      '<strong>Trucker 04</strong><p>working</p>'
+      },
+      'geometry': {
+      'type': 'Point',
+      'coordinates': [demo_lon, demo_lat+0.004]
+      }
+      }
+      ]
+      }       // data end
+      });      // addsource end
+      // Add a layer showing the places. #4264fb is blue
+    
+      map.addLayer({
+      'id': 'places',
+      'type': 'symbol',
+      'source': 'places',
+      'layout': {
+        'icon-image': 'block-icon',
+        'icon-size': 0.5
+      },
+      'paint': {
+        'icon-color': [
+          'match', // Use the 'match' expression: https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+          ['get', 'title'], // Use the result 'STORE_TYPE' property
+          '01',
+          '#FF8C00',
+          'Pharmacy',
+          '#FF8C00',
+          '#1ee533' // any other store type
+        ]
+      }
+      });
+      /*
+      map.addLayer({
+      'id': 'places',
+      'type': 'circle',
+      'source': 'places',
+      'paint': {
+      'circle-color': '#1ee533',
+      'circle-radius': 6,
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff'
+      }
+      });
+      */
+
+    });
+    // Create a popup, but don't add it to the map yet.
+    const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false
+    });
+    map.on('mouseenter', 'places', (e) => {
+     // Change the cursor style as a UI indicator.
+    map.getCanvas().style.cursor = 'pointer';
+   
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const description = e.features[0].properties.description;
+    
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+    
+    // Populate the popup and set its coordinates
+    // based on the feature found.
+    popup.setLngLat(coordinates).setHTML(description).addTo(map);
+    });
+    
+    map.on('mouseleave', 'places', () => {
+    map.getCanvas().style.cursor = '';
+    // popup.remove();
+    });
+  });
+
+
+  var scale = new mapboxgl.ScaleControl({
+			maxWidth: 100,
+			unit: 'metric'
+		});
+	map.addControl(scale, "bottom-left");
+
+  </script>
+
+
+
+    test after map
+{% endblock %}

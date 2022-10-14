@@ -92,7 +92,7 @@ def get_farm_status(request):
     #username = request.user.get_username()
     authentication = request.user.is_authenticated
     if authentication:
-        if not request.is_ajax or request.method != "POST":
+        if request.method != "POST":
             return JsonResponse(
                 {"error": "AJAX request must be sent using POST"},
                 status=400)
@@ -102,7 +102,7 @@ def get_farm_status(request):
     try:
         # Get the controller ID from the POST request.
         data = json.loads(request.body.decode(request.encoding))
-        farm_id = data[PARAM_FARM_ID]
+        farm_id = data["farm_id"]
         first = data["first"] if "first" in data else False
 
         farm_status = {}
@@ -114,7 +114,10 @@ def get_farm_status(request):
             farm_status[ID_ERROR_TITLE] = NO_GATEWAYS_TITLE
             farm_status[ID_ERROR_MSG] = NO_GATEWAYS_MSG
         else:
-            farm_status[ID_GATEWAYS] = [gateway.to_json() for gateway in gateways]
+            #farm_status[ID_GATEWAYS] = [gateway.to_json() for gateway in gateways]
+            #不能用返回值更新这大表，因为地图上的列表没初始生成，画这表要在map.add layer
+            return
+                
 
         # Get nodes.
         # for gateway in gateways, list nodes
@@ -211,23 +214,26 @@ def dashboard(request):
             except IoTSite.DoesNotExist:
                 solar_farm = None
             mapbox_access_token = siteconfig.mapbox_access_token
-            #prepare request data to passing
-            additional = {"token":mapbox_access_token,"solar_farm":solar_farm}
 
             #get gateways
             gateways = list(IoTDevice.objects.filter(site_id = solar_farm.id))
+
+            #prepare request data to passing
+            additional = {"token":mapbox_access_token,"solar_farm":solar_farm}
+
+
 
             #gate trackers
             #trackers = {}
             #return TemplateResponse(request, 'dashboard.html',
             #            get_request_data(request))
-            return TemplateResponse(request, 'dashboard.html',
+            return TemplateResponse(request, 'dashboard_t.html',
                                     get_request_data(request,additional))
     else:
         return redirect("members/login_user")
 
 
-def gateway(request):
+def iot_gateway(request):
     if not request_has_params(request):
         return redirect("/")
 
@@ -253,6 +259,7 @@ def get_request_data(request,additional=None):
     data = {}
 
     data["mapbox_access_token"] = additional["token"]
+    
     if request_has_id(request):
         data[PARAM_FARM_ID] = request.GET[PARAM_FARM_ID]
     if request_has_name(request):
@@ -289,3 +296,31 @@ def request_has_params(request):
         `True` if the request has the required parameters, `False` otherwise.
     """
     return request_has_id(request) and request_has_name(request)
+
+
+def check_farm_connection_status(request):
+    authentication = request.user.is_authenticated
+    if authentication:
+        if not request.is_ajax or request.method != "POST":
+            return JsonResponse(
+                {"error": "AJAX request must be sent using POST"},
+                status=400)
+    else:
+        return redirect('/access/login')
+
+    try:
+        # Get the controller ID from the POST request.
+        data = json.loads(request.body.decode(request.encoding))
+        farm_id = data[PARAM_FARM_ID]
+        first = data["first"] if "first" in data else False
+
+        farm_status = {}
+
+        # Get the controller ID and irrigation station from the POST request.
+        data = json.loads(request.body.decode(request.encoding))
+        controller_id = data["controller_id"]
+
+        online = True
+        return JsonResponse({"status": online}, status=200)
+    except Exception as e:
+        return JsonResponse({ID_ERROR: str(e)})

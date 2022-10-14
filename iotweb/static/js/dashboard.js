@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-const INFO_WINDOW_CONTENT = "" +
+const DEVICE_POPUP_CONTENT = "" +
     "<div class='marker-info'>" +
     "    <div class='marker-info-title'>" +
     "        <span id='@@ID@@-TITLE'>@@TITLE@@</span>" +
@@ -52,7 +52,7 @@ const INFO_WINDOW_CONTENT = "" +
     "        <div id='@@ID@@-BUTTON-LOADING' class='marker-info-button-loading'>" +
     "    </div>" +
     "</div>";
-const INFO_WINDOW_CONTENT_CONTROLLER = "" +
+const DEVICE_POPUP_CONTENT_GATEWAY = "" +
     "<div class='marker-info'>" +
     "    <div class='marker-info-title'>" +
     "        <span>CONTROLLER</span>" +
@@ -96,8 +96,8 @@ const ID_BATTERY = "battery";
 const ID_MOISTURE = "moisture";
 
 const ID_STATUS = "status";
-const ID_CONTROLLERS = "controllers";
-const ID_STATIONS = "stations";
+const ID_GATEWAYS = "gateways";
+const ID_NODES = "nodes";
 const ID_WEATHER = "weather";
 const ID_TANK = "tank";
 
@@ -117,19 +117,20 @@ const WEATHER_ICONS = [SUN_GRAY, CLOUD_GRAY, RAIN_GRAY];
 
 var map;
 
-var stations = [];
+var testpopup;
+var nodes = [];
 var irrigationControllers = [];
 
-var loadingStationsStatus = false;
+var loadingnodesStatus = false;
 
-var stationMarkers = {};
-var stationWindows = {};
-var controllerMarker = null;
-var controllerWindow = null;
-var stationTemperatures = {};
-var stationMoistures = {};
-var stationBatteries = {};
-var stationValves = {};
+var nodeMarkers = {};
+var nodePopups = {};
+var gatewayMarker = null;
+var gatewayPopup = null;
+var nodeTemperatures = {};
+var nodeMoistures = {};
+var nodeBatteries = {};
+var nodeValves = {};
 var controllerWind = null;
 var controllerRain = null;
 var controllerRadiation = null;
@@ -137,14 +138,14 @@ var controllerRadiation = null;
 var tankValve;
 var waterLevel;
 
-var stationMarker;
-var stationIrrigatingMarker;
-var stationOfflineMarker;
-var controllerMarker;
+var nodeMarker;
+var nodeIrrigatingMarker;
+var nodeOfflineMarker;
+var gatewayMarker;
 
 var currentWeatherIcon;
 var currentWeatherStatus;
-var avgTemp = 23.0;  // Define initial value for the temperature so if no stations are registered the weather forecast can be displayed.
+var avgTemp = 23.0;  // Define initial value for the temperature so if no nodes are registered the weather forecast can be displayed.
 
 
 var bounds;
@@ -152,22 +153,144 @@ var bounds;
 // Initialize and add the map.
 function initMap() {
 
-
-    //farLocation = [ solar_farm.longitude,solar_farm.latitude ];
-
+    testpopup = DEVICE_POPUP_CONTENT_GATEWAY;
+    demo_lon=110.33;
+    demo_lat=37.90;
     // The map, centered at Uluru.
     map_configuration = {
         container: 'devices-map',
         // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [110,36],
+        center: [demo_lon,demo_lat],
         zoom: 15  
     }
     map = new mapboxgl.Map(map_configuration);
 
-   
-    // Create empty LatLngBounds object.
-    //bounds = new google.maps.LatLngBounds();
+    map.on('load', () => {
+
+        map.loadImage('static/images/block.png', (error, image) => {
+          if (error) throw error;
+          map.addImage('block-icon', image, { 'sdf': true });
+          map.addSource('places', {
+          'type': 'geojson',
+          'data': {
+          'type': 'FeatureCollection',
+          'features': [
+          {
+          'type': 'Feature',
+          'properties': {
+            'title': 02,
+          'description': testpopup
+          },
+          'geometry': {
+          'type': 'Point',
+          'coordinates': [demo_lon+0.001, demo_lat]
+          }
+          },
+          {
+          'type': 'Feature',
+          'properties': {
+          'title': 02,
+          'description':
+          '<strong>Tracker 02</strong><p>02</p>'
+          },
+          'geometry': {
+          'type': 'Point',
+          'coordinates': [demo_lon+0.002, demo_lat]
+          }
+          },
+          {
+          'type': 'Feature',
+          'properties': {
+          'title': 03,
+          'description':
+          '<strong>Tracer 03</strong><p>03</p>'
+          },
+          'geometry': {
+          'type': 'Point',
+          'coordinates': [demo_lon+0.003, demo_lat]
+          }
+          },
+          
+          {
+          'type': 'Feature',
+          'properties': {
+          'title':04,
+          'description':
+          '<strong>Trucker 04</strong><p>working</p>'
+          },
+          'geometry': {
+          'type': 'Point',
+          'coordinates': [demo_lon, demo_lat+0.004]
+          }
+          }
+          ]
+          }       // data end
+          });      // addsource end
+          // Add a layer showing the places. #4264fb is blue
+        
+          map.addLayer({
+          'id': 'places',
+          'type': 'symbol',
+          'source': 'places',
+          'layout': {
+            'icon-image': 'block-icon',
+            'icon-size': 0.5
+          },
+          'paint': {
+            'icon-color': [
+              'match', // Use the 'match' expression: https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+              ['get', 'title'], // Use the result 'STORE_TYPE' property
+              '01',
+              '#FF8C00',
+              'Pharmacy',
+              '#FF8C00',
+              '#1ee533' // any other store type
+            ]
+          }
+          });
+
+    
+        });
+        // Create a popup, but don't add it to the map yet.
+        const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+        });
+        map.on('mouseenter', 'places', (e) => {
+         // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+       
+        // Copy coordinates array.
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const description = e.features[0].properties.description;
+        
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        popup.setLngLat(coordinates).setHTML(description).addTo(map);
+        });
+        
+        map.on('mouseleave', 'places', () => {
+        map.getCanvas().style.cursor = '';
+        // popup.remove();
+        });
+    });
+    
+    
+      var scale = new mapboxgl.ScaleControl({
+                maxWidth: 100,
+                unit: 'metric'
+            });
+        map.addControl(scale, "bottom-left");
+    
+
 }
 
 
@@ -183,21 +306,24 @@ function getFarmStatus(first=true) {
         return;
 
     // Update colors of the values being refreshed.
-    loadingStationsStatus = true;
-    updateLoadingStatus();
 
-    $.post(
-        "../ajax/get_farm_status",
-        JSON.stringify({
-            "controller_id": getControllerID(),
-            "first": first
-        }),
-        function(data) {
-            if (!isDashboardShowing())
-                return;
-            processFarmStatusResponse(data, first);
-        }
-    );
+    //updateLoadingStatus();
+    
+    //test = first;
+    //test = "1";
+
+    //$.post(
+    //    "../ajax/get_farm_status",
+    //    JSON.stringify({
+    //        "farm_id": test,
+    //        "first": first
+    //    }),
+    //    function(data) {
+    //        if (!isDashboardShowing())
+    //            return;
+    //        processFarmStatusResponse(data, first);
+    //    }
+    //);
 }
 
 
@@ -218,9 +344,9 @@ function processFarmStatusResponse(response) {
             updateCurrentWeather();
         });
         drawDevices(response);
-        updateWeatherWidget();
+        //updateWeatherWidget();
     }
-    //updateStationsStatus(response);
+    //updatenodesStatus(response);
     
     // Repeat the task every 30 seconds.
     setTimeout(function() {
@@ -228,7 +354,7 @@ function processFarmStatusResponse(response) {
     }, REFRESH_INTERVAL);
 }
 
-// Draws the markers for the stations and main controller.
+// Draws the markers for the nodes and main controller.
 function drawDevices(response) {
     // First, check if there was any error in the request.
     if (response["error_msg"] != null || response["error"] != null) {
