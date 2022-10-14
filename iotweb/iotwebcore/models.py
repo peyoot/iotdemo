@@ -85,25 +85,7 @@ class IoTDevice(models.Model):
 
     def __str__(self):
         return self.device_name
-    
-    def to_json(self):
-        """
-        Returns the object in JSON format.
-
-        """
-        json_dict = {
-            "device_mac": self._device_mac,
-            "device_name": self._device_name,
-            "location": self._location,
-            "site_id": self._site_id,
-            "row": self._row,
-            "col": self._col,
-            "lat_offset": self._lat_offset,
-            "lon_offset": self._lon_offset
-        }
-        return json_dict
-
-    
+       
     class Meta:
         managed = True
         verbose_name = 'IoT Gateway'
@@ -112,7 +94,8 @@ class IoTDevice(models.Model):
 class NodeDevice(models.Model):
     node_name = models.CharField('device_name',max_length=100)
     node_type = models.CharField(choices=NODE_TYPE,max_length=10)
-    gateway_mac = models.ForeignKey(IoTDevice, on_delete=models.CASCADE,verbose_name='gateway')
+    node_mac = models.CharField('device_mac',max_length=20)
+    gateway = models.ForeignKey(IoTDevice, on_delete=models.CASCADE,verbose_name='gateway')
     row = models.IntegerField(default=1,verbose_name="row")
     col = models.IntegerField(default=1,verbose_name="column")
     Lat_offset = models.IntegerField(default=0)

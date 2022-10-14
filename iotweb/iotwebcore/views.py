@@ -48,15 +48,6 @@ def get_solar_farms(request):
     username = request.user.get_username()
     authentication = request.user.is_authenticated
     solar_farms = []
-    """
-    if request.user.is_authenticated:
-        if not request.is_ajax or request.method != "POST":
-            return JsonResponse(
-                {"error": "AJAX request must be sent using POST"},
-                status=400)
-    else:
-        return redirect('/')
-    """
 
     solar_farms = list(IoTSite.objects.filter(user=userid).all().values())
 
@@ -99,43 +90,40 @@ def get_farm_status(request):
     else:
         return redirect('/access/login')
 
+    farm_id = 1
+
     try:
-        # Get the controller ID from the POST request.
-        data = json.loads(request.body.decode(request.encoding))
-        farm_id = data["farm_id"]
-        first = data["first"] if "first" in data else False
+        solar_farm = IoTSite.objects.get(id = farm_id)
+    except IoTSite.DoesNotExist:
+        solar_farm = None
 
-        farm_status = {}
+    try:
+        farm_location = [solar_farm.longitude,solar_farm.latitude]
+        solar_devices = list(IoTDevice.objects.filter(site_id=farm_id).all().values())
 
-        # Get Iotdevices(gateways).
-        gateways = list(IoTDevice.objects.filter(site_id=farm_id).all().values())
- 
-        if len(gateways) == 0:
-            farm_status[ID_ERROR_TITLE] = NO_GATEWAYS_TITLE
-            farm_status[ID_ERROR_MSG] = NO_GATEWAYS_MSG
+
+        if len(solar_devices) > 0:
+            #return JsonResponse({"farms": solar_farms},status=200)
+            #for solar_farm in solar_farms:
+            #    test_json = json.dumps(solar_farm)
+            #test_dict={"farms": [solar_farm for solar_farm in solar_farms]}
+            return JsonResponse({"devices": [solar_device for solar_device in solar_devices],"farm_location":farm_location},status=200)
         else:
-            #farm_status[ID_GATEWAYS] = [gateway.to_json() for gateway in gateways]
-            #不能用返回值更新这大表，因为地图上的列表没初始生成，画这表要在map.add layer
-            return
-                
+            return JsonResponse({ID_ERROR_TITLE: NO_FARMS_TITLE,
+                                ID_ERROR_MSG: NO_FARMS_MSG,
+                                ID_ERROR_GUIDE: SETUP_MODULES_GUIDE})
 
-        # Get nodes.
-        # for gateway in gateways, list nodes
-        #nodes = list(IoTDevice.objects.filter(site_id=farm_id).all().values())
-        """"
-        if len(nodes) == 0:
-            farm_status[ID_ERROR_TITLE] = NO_NODES_TITLE
-            farm_status[ID_ERROR_MSG] = NO_NODES_MSG
-            farm_status[ID_ERROR_GUIDE] = SETUP_MODULES_GUIDE
-        else:
-            farm_status[ID_NODES] = [station.to_json() for station in stations]
-        """
+            # Get the controller ID from the POST request.
+            #data = json.loads(request.body.decode(request.encoding))
+            #farm_id = data["farm_id"]
+            #first = data["first"] if "first" in data else False
 
-        # Get the farm status.
-        status = {"gateways": gateways,"nodes": ""}
-        farm_status["status"] = status
+            # Get nodes.
+            # Get the farm status.
+            #status = {"gateways": gateways,"nodes": ""}
+            #farm_status["status"] = status
 
-        return JsonResponse(farm_status, status=200)
+            #return JsonResponse(farm_status, status=200)
     except Exception as e:
         return JsonResponse({ID_ERROR: str(e)})
 

@@ -120,9 +120,15 @@ var map;
 var testpopup;
 var nodes = [];
 var irrigationControllers = [];
+var sourceFeatures = [];
+var solarDevices = [];
+var farmLoc = [];
 
 var loadingnodesStatus = false;
 
+var deviceFeatures = {};
+var deviceFeature = {};
+var deviceLoc = [];
 var nodeMarkers = {};
 var nodePopups = {};
 var gatewayMarker = null;
@@ -154,20 +160,120 @@ var bounds;
 function initMap() {
 
     testpopup = DEVICE_POPUP_CONTENT_GATEWAY;
-    demo_lon=110.33;
-    demo_lat=37.90;
+    
+    
+    node_infor = {};
+
+ 
     // The map, centered at Uluru.
     map_configuration = {
         container: 'devices-map',
         // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [demo_lon,demo_lat],
+        center: [115,37],
         zoom: 15  
     }
     map = new mapboxgl.Map(map_configuration);
 
-    map.on('load', () => {
+    
+    
+    
+    var scale = new mapboxgl.ScaleControl({
+                maxWidth: 100,
+                unit: 'metric'
+            });
+    map.addControl(scale, "bottom-left");
+    
 
+}
+
+
+// Returns whether the dashboard page is showing or not.
+function isDashboardShowing() {
+    return window.location.pathname.indexOf("dashboard") > -1;
+}
+
+//get solar farm status
+
+function getFarmStatus(first=true) {
+    if (!isDashboardShowing())
+        return;
+
+    // Update colors of the values being refreshed.
+
+    //updateLoadingStatus();
+    
+    //test = first;
+    //test = "1";
+
+    //$.post(
+    //    "../ajax/get_farm_status",
+    //    JSON.stringify({
+    //        "farm_id": test,
+    //        "first": first
+    //    }),
+    //    function(data) {
+    //        if (!isDashboardShowing())
+    //            return;
+    //        processFarmStatusResponse(data, first);
+    //    }
+    //);
+}
+
+
+// Gets the status of the farm.
+function getFarmStatusCallback(response) {
+
+     // Get the devices from the JSON response.
+    let readDevices = response["devices"];
+    let farmLoc = response["farm_location"];
+    map.flyTo({center:farmLoc});
+     // Check if the list of farms contains any farm.
+     if (readDevices == null || readDevices.length == 0)
+         return;
+ 
+ 
+    for (let device of readDevices) {
+        // Add the farm to the dictionary.
+        console.log(device);
+
+        solarDevices[device["id"]] = device;
+        //calculate device location based on row col
+        device_lon=farmLoc[0]+0.001*device["col"];
+        device_lat=farmLoc[1]+0.001*device["row"];
+        deviceLoc = [device_lon,device_lat];
+        
+        deviceFeature = {
+            'type': 'Feature', 
+            'properties': {
+                'description': DEVICE_POPUP_CONTENT
+                },
+            'geometry': {
+                'type': 'Point',
+                'coordinates': deviceLoc
+                }
+            };
+        sourceFeatures.push(deviceFeature);
+    }
+
+    //map.flyto({ center: farmLoc });
+    let testarray = 
+        [
+            {
+            'type': 'Feature',
+            'properties': {
+            'title': '01',
+            'description':
+            '<strong>tracker01</strong><p>device 01</p>'
+            },
+            'geometry': {
+            'type': 'Point',
+            'coordinates': [109.002, 37.002]
+            }
+            }
+        ]
+    map.on('load', () => {
+        
         map.loadImage('static/images/block.png', (error, image) => {
           if (error) throw error;
           map.addImage('block-icon', image, { 'sdf': true });
@@ -175,58 +281,37 @@ function initMap() {
           'type': 'geojson',
           'data': {
           'type': 'FeatureCollection',
-          'features': [
-          {
-          'type': 'Feature',
-          'properties': {
+          'features': sourceFeatures
+          /*
+          [
+            {
+            'type': 'Feature',
+            'properties': {
+            'title': '01',
+            'description':
+            '<strong>tracker01</strong><p>device 01</p>'
+            },
+            'geometry': {
+            'type': 'Point',
+            'coordinates': [110.001, 37]
+            }
+            },
+            {
+            'type': 'Feature',
+            'properties': {
             'title': 02,
-          'description': testpopup
-          },
-          'geometry': {
-          'type': 'Point',
-          'coordinates': [demo_lon+0.001, demo_lat]
-          }
-          },
-          {
-          'type': 'Feature',
-          'properties': {
-          'title': 02,
-          'description':
-          '<strong>Tracker 02</strong><p>02</p>'
-          },
-          'geometry': {
-          'type': 'Point',
-          'coordinates': [demo_lon+0.002, demo_lat]
-          }
-          },
-          {
-          'type': 'Feature',
-          'properties': {
-          'title': 03,
-          'description':
-          '<strong>Tracer 03</strong><p>03</p>'
-          },
-          'geometry': {
-          'type': 'Point',
-          'coordinates': [demo_lon+0.003, demo_lat]
-          }
-          },
-          
-          {
-          'type': 'Feature',
-          'properties': {
-          'title':04,
-          'description':
-          '<strong>Trucker 04</strong><p>working</p>'
-          },
-          'geometry': {
-          'type': 'Point',
-          'coordinates': [demo_lon, demo_lat+0.004]
-          }
-          }
-          ]
-          }       // data end
-          });      // addsource end
+            'description':
+            '<strong>Tracker 02</strong><p>02</p>'
+            },
+            'geometry': {
+            'type': 'Point',
+            'coordinates': [110.002, 37]
+            }
+            }
+            ]       */
+            
+            }
+            });      // addsource end
           // Add a layer showing the places. #4264fb is blue
         
           map.addLayer({
@@ -282,59 +367,6 @@ function initMap() {
         // popup.remove();
         });
     });
-    
-    
-      var scale = new mapboxgl.ScaleControl({
-                maxWidth: 100,
-                unit: 'metric'
-            });
-        map.addControl(scale, "bottom-left");
-    
-
-}
-
-
-// Returns whether the dashboard page is showing or not.
-function isDashboardShowing() {
-    return window.location.pathname.indexOf("dashboard") > -1;
-}
-
-//get solar farm status
-
-function getFarmStatus(first=true) {
-    if (!isDashboardShowing())
-        return;
-
-    // Update colors of the values being refreshed.
-
-    //updateLoadingStatus();
-    
-    //test = first;
-    //test = "1";
-
-    //$.post(
-    //    "../ajax/get_farm_status",
-    //    JSON.stringify({
-    //        "farm_id": test,
-    //        "first": first
-    //    }),
-    //    function(data) {
-    //        if (!isDashboardShowing())
-    //            return;
-    //        processFarmStatusResponse(data, first);
-    //    }
-    //);
-}
-
-
-// Gets the status of the farm.
-function getFarmStatusCallback(response) {
-
-    let readstatus = response["gateways"];
-    
-    var test = {};
-    processFarmStatusResponse(response);
-   
 }
 
 // Processes the response of the farm status request.

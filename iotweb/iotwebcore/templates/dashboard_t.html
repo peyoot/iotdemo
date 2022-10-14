@@ -64,7 +64,7 @@
             <ul class="nav flex-column text-white w-100">
                 
                 <li  class="nav-item ">
-                <a data-pjax href="#" class="nav-link text-white"><i class="bx bxs-dashboard"></i><span class="mx-2">Dashboard</span></a>
+                <a data-pjax href="/dashboard" class="nav-link text-white"><i class="bx bxs-dashboard"></i><span class="mx-2">Dashboard</span></a>
                 </li>
 
                 <li  class="nav-item ">
@@ -313,16 +313,16 @@
     // Initialize the map.
     mapboxgl.accessToken = '{{ mapbox_access_token }}' ;
     initMap();
+
     $(document).ready(function() {
         // Hide the sidebar collapsator.
    
 
         // Get smart farms and place them in the map.
-        //$.post(
-        //    "{% url 'get_farm_status' %}",
+        $.post(
+            "{% url 'get_farm_status' %}",
             getFarmStatusCallback
-        //);
-
+        );
   
     });
     </script>
