@@ -173,7 +173,7 @@ logging.config.dictConfig({
     },
     'loggers': {
     # root logger
-        'chanmqttproxy': {
+        'chanmqttsproxy': {
             'level': 'DEBUG',
             'handlers': ['console'],
         },

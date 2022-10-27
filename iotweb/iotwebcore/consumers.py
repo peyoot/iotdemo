@@ -1,7 +1,7 @@
 import json
 #from channels.consumer import AsyncConsumer
 #from channels import Group
-from chanmqttproxy.mqttconsumer import MqttConsumer
+from chanmqttsproxy.mqttconsumer import MqttConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class IotwebcoreConsumer(AsyncWebsocketConsumer):

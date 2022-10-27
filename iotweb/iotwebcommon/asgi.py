@@ -11,7 +11,7 @@ import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, ChannelNameRouter, URLRouter
 from django.core.asgi import get_asgi_application
-from chanmqttproxy import MqttConsumer
+from chanmqttsproxy import MqttConsumer
 import iotwebcore.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'iotwebcommon.settings')
